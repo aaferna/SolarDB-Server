@@ -1,5 +1,4 @@
 const server = require("./modules/server");
-const solar = require("solardb-core")
 const fs = require("fs");
 const path = require('path');
 const cmd = require('minimist')(process.argv.slice(2))
@@ -20,13 +19,9 @@ if(cmd._ == "tokens"){
         const fiStack = require(dirapp + "/config/stack.json")
 
         if(cmd._ == "setup"){
-
             server.init(fiStack)
-        
         } else {
-
             server.run(fiCors, fiStack)
-
         }
 
     } else {

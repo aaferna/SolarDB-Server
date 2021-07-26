@@ -73,6 +73,7 @@ const run = (fiCors, fiStack) =>{
             }
             
         })
+
         exsrv.post('/insert', (req, res) => {
             if(req.headers.authorization){
                 try {
@@ -96,6 +97,49 @@ const run = (fiCors, fiStack) =>{
                                 console.log(err)
                                 res.send({ status: 200, msg: "No se creo el index"})
                             }
+                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
+                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                } catch(err) {
+                    console.log(err)
+                    res.send("Hubo un error en la consulta")
+                }
+            }
+        })
+
+        exsrv.put('/update', (req, res) => {
+            if(req.headers.authorization){
+                try {
+                    const token = tokenDecode(req.headers.authorization)
+                    if(token != 0){
+                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
+                        const r = indexDecode( index )
+                        const json = req.body
+                        if(r != 0 && json.collection != undefined ){
+
+                            try{
+                                const data = jwt.encode(json.data, fiStack.hashIndex);
+                                const datainStore = solar.dbGetData( json.id, json.collection, fiStack.container).pop()
+
+                                if(datainStore == data){
+                                    res.send({ status: 110, msg: "Index Actualizado"})
+                                }else{
+                                    const r = solar.dbUpdate(data, json.id, json.collection, fiStack.container)
+                                    if(r.id){
+                                        res.send({
+                                            status: 110,
+                                            msg: "Index Actualizado",
+                                            id: r.id
+                                        })
+                                    } else { res.send({ status: 200, msg: "No se actualizo el index"}) }
+                                }
+
+                                
+                            }catch(err){
+                                console.log(err)
+                                res.send({ status: 200, msg: "No se actualizo el index"})
+                            }
+
+
                         } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
                     } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
                 } catch(err) {
