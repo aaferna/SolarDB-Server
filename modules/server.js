@@ -82,7 +82,7 @@ const run = (fiCors, fiStack) =>{
                         const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
                         const r = indexDecode( index )
                         const json = req.body
-                        if(r != 0 && json.collection != undefined ){
+                        if(r != 0 && json.collection != undefined && json.data != undefined ){
                             try{
                                 const data = jwt.encode(json.data, fiStack.hashIndex);
                                 const r = solar.dbInsert(data, json.collection, fiStack.container)
@@ -114,7 +114,7 @@ const run = (fiCors, fiStack) =>{
                         const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
                         const r = indexDecode( index )
                         const json = req.body
-                        if(r != 0 && json.collection != undefined ){
+                        if(r != 0 && json.collection != undefined && json.data != undefined ){
 
                             try{
                                 const data = jwt.encode(json.data, fiStack.hashIndex);
