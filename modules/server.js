@@ -114,15 +114,14 @@ const run = (fiCors, fiStack) =>{
                         const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
                         const r = indexDecode( index )
                         const json = req.body
-                        if(r != 0 && json.collection != undefined && json.data != undefined ){
+                        if(r != 0 && json.collection != undefined && json.data != undefined && json.id != undefined ){
 
                             try{
                                 const data = jwt.encode(json.data, fiStack.hashIndex);
                                 const datainStore = solar.dbGetData( json.id, json.collection, fiStack.container).pop()
-
                                 if(datainStore == data){
                                     res.send({ status: 110, msg: "Index Actualizado"})
-                                }else{
+                                } else {
                                     const r = solar.dbUpdate(data, json.id, json.collection, fiStack.container)
                                     if(r.id){
                                         res.send({
@@ -132,14 +131,43 @@ const run = (fiCors, fiStack) =>{
                                         })
                                     } else { res.send({ status: 200, msg: "No se actualizo el index"}) }
                                 }
-
-                                
                             }catch(err){
                                 console.log(err)
                                 res.send({ status: 200, msg: "No se actualizo el index"})
                             }
 
 
+                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
+                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                } catch(err) {
+                    console.log(err)
+                    res.send("Hubo un error en la consulta")
+                }
+            }
+        })
+
+        exsrv.get('/select', (req, res) => {
+            if(req.headers.authorization){
+                try {
+                    const token = tokenDecode(req.headers.authorization)
+                    if(token != 0){
+                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
+                        const r = indexDecode( index )
+                        const json = req.body
+                        if(r != 0 && json.collection != undefined && json.id != undefined ){
+                            try{
+                                const datainStore = solar.dbGetData(json.id, json.collection, fiStack.container).pop()
+                                const response = indexDecode(datainStore)
+                                    if(datainStore){
+                                        res.send({
+                                            status: 120,
+                                            data: response
+                                        })
+                                    } else { res.send({ status: 200, msg: "No se actualizo el index"}) }
+                            }catch(err){
+                                console.log(err)
+                                res.send({ status: 200, msg: "No se actualizo el index"})
+                            }
                         } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
                     } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
                 } catch(err) {
