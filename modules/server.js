@@ -154,16 +154,41 @@ const run = (fiCors, fiStack) =>{
                         const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
                         const r = indexDecode( index )
                         const json = req.body
-                        if(r != 0 && json.collection != undefined && json.id != undefined ){
+                        if(r != 0 && json.collection != undefined && json.id != undefined && json.type != undefined || json.type != "" ){
                             try{
-                                const datainStore = solar.dbGetData(json.id, json.collection, fiStack.container).pop()
-                                const response = indexDecode(datainStore)
-                                    if(response){
+
+                                let datainStore
+                                let response
+
+                                if (json.type === "latest" || json.type === ""){
+
+                                    datainStore = solar.dbGetData(json.id, json.collection, fiStack.container).pop()
+                                    response = indexDecode(datainStore)
+
+                                } else if (json.type === "all"){
+
+                                    let jsonData = {}; 
+                                    let index = 0
+
+                                    datainStore = solar.dbGetData(json.id, json.collection, fiStack.container)
+
+                                    if(datainStore[0].code != "ENOENT"){
+                                        datainStore.map(itm => {
+                                            jsonData[index] = indexDecode(itm)
+                                            index ++
+                                        })
+                                        response = jsonData
+                                    } else { response = 0 }
+                                    
+                                }
+
+                                    if(response != 0){
                                         res.send({
                                             status: 120,
                                             data: response
                                         })
                                     } else { res.send({ status: 200, msg: "No se encontro el index"}) }
+
                             }catch(err){
                                 console.log(err)
                                 res.send({ status: 200, msg: "No se actualizo el index"})
@@ -176,7 +201,7 @@ const run = (fiCors, fiStack) =>{
                 }
             }
         })
-        
+
         exsrv.delete('/delete', (req, res) => {
             if(req.headers.authorization){
                 try {
@@ -206,7 +231,6 @@ const run = (fiCors, fiStack) =>{
                 }
             }
         })
-        
 
     // Server Init
 
