@@ -291,8 +291,6 @@ const run = (fiCors, fiStack) =>{
                         if(r != 0 && json.collection != undefined && json.query != undefined && json.type != undefined){
                             try{
 
-                                let preresponse = []
-
                                 const returns = (data, cant) =>{
                                     if(data != 0){
                                         res.send({
@@ -303,11 +301,9 @@ const run = (fiCors, fiStack) =>{
                                     } else { res.send({ status: 200, msg: "No se encontro el index"}) }
                                 }
 
-
                                 if (json.type === "latest" || json.type === ""){
 
                                     let datainStore = solar.dbGetIndex(json.collection, fiStack.container)
-
 
                                     if(json.query.keys){
                                         let map1 = 0
@@ -406,11 +402,7 @@ const run = (fiCors, fiStack) =>{
 
                                     }
 
-
-                                } else{
-                                    res.send("Hubo un error en la consulta")
-                                }
-
+                                } else { res.send({ status: 200, msg: "No se encontro index"}) }
 
                             }catch(err){
                                 console.log(err)
