@@ -1,7 +1,7 @@
 const solar = require("solardb-core")
 const express = require("express")
 const cors = require('cors');
-const path = require('path');
+// const path = require('path');
 const jwt = require('jwt-simple');
 const generator = require('generate-password');
 
@@ -59,6 +59,7 @@ const run = (fiCors, fiStack) =>{
         //     extended: true
         // }));
         exsrv.use(express.json());
+        exsrv.disable('x-powered-by');
 
     // Activity
 
@@ -202,6 +203,157 @@ const run = (fiCors, fiStack) =>{
             }
         })
 
+        exsrv.get('/select/search/specific', (req, res) => {
+            if(req.headers.authorization){
+                try {
+                    const token = tokenDecode(req.headers.authorization)
+                    if(token != 0){
+                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
+                        const r = indexDecode( index )
+                        const json = req.body
+                        if(r != 0 && json.collection != undefined && json.tag != undefined  && json.type != undefined){
+
+                            try{
+
+                                let datainStore
+                                let response
+                                let jsonData = {}; 
+                                let index = 0
+
+                                let indexes = solar.dbGetIndex(json.collection, fiStack.container)
+
+                                if (json.type === "latest" || json.type === ""){
+
+                                    indexes.map(id => {
+                                        datainStore = solar.dbGetData(id, json.collection, fiStack.container).pop()
+                                        let ref = 0
+                                        let predata = {}
+                                                preresponse = indexDecode(datainStore)
+                                                if(datainStore[0].code != "ENOENT" || preresponse != 0){
+                                                    predata[ref] = { "data" : preresponse[json.tag] }
+                                                    ref ++
+                                                } else { response = 0 }
+                                        jsonData[index] = { "index": id, "history" : predata }
+                                        index ++
+                                    })
+                                    response = jsonData
+
+                                } else if (json.type === "all"){
+
+                                    indexes.map(id => {
+                                        datainStore = solar.dbGetData(id, json.collection, fiStack.container)
+                                        let ref = 0
+                                        let predata = {}
+                                            datainStore.map(item =>{
+                                                preresponse = indexDecode(item)
+                                                if(datainStore[0].code != "ENOENT" || preresponse != 0){
+                                                    predata[ref] = { "data" : preresponse[json.tag] }
+                                                    ref ++
+                                                } else { response = 0 }
+                                            })
+                                        jsonData[index] = { "index": id, "history" : predata }
+                                        index ++
+                                    })
+                                    response = jsonData
+
+                                }
+
+                                if(response != 0){
+                                    res.send({
+                                        status: 120,
+                                        tag: json.tag,
+                                        data: response
+                                    })
+                                } else { res.send({ status: 200, msg: "No se encontro el index"}) }
+
+                            }catch(err){
+                                console.log(err)
+                                res.send({ status: 200, msg: "No se actualizo el index"})
+                            }
+
+                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
+                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                } catch(err) {
+                    console.log(err)
+                    res.send("Hubo un error en la consulta")
+                }
+            }
+        })
+
+        exsrv.get('/select/query', (req, res) => {
+            if(req.headers.authorization){
+                try {
+                    const token = tokenDecode(req.headers.authorization)
+                    if(token != 0){
+                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
+                        const r = indexDecode( index )
+                        const json = req.body
+                        if(r != 0 && json.collection != undefined && json.query != undefined && json.type != undefined){
+                            try{
+
+                                let response = {}
+                                let preresponse = []
+
+                                const returns = (data, cant) =>{
+                                    if(data != 0){
+                                        res.send({
+                                            status: 120,
+                                            total: cant,
+                                            data: data
+                                        })
+                                    } else { res.send({ status: 200, msg: "No se encontro el index"}) }
+                                    
+                                }
+
+
+                                if (json.type === "latest" || json.type === ""){
+
+                                    let datainStore = solar.dbGetIndex(json.collection, fiStack.container)
+
+
+                                    if(json.query.keys){
+                                        let map1 = 0
+
+                                        datainStore.map( id => {
+
+                                            let prepreresponse = []
+                                            let map2 = 0
+                                            let data = indexDecode(solar.dbGetData(id, json.collection, fiStack.container).pop())
+
+                                                json.query.keys.map(key => {
+                                                    if(data[key]){
+                                                        prepreresponse[map2] = data[key]
+                                                        map2++
+                                                    } 
+                                                })
+
+                                            preresponse[map1] = { index: id, data: prepreresponse }
+                                            map1 ++
+
+                                        })
+
+                                        returns (preresponse, map1)
+                                    }
+
+
+
+                                } 
+
+
+                            }catch(err){
+                                console.log(err)
+                                res.send({ status: 200, msg: "No se actualizo el index"})
+                            }
+                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
+                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                } catch(err) {
+                    console.log(err)
+                    res.send("Hubo un error en la consulta")
+                }
+            }
+        })
+
+
         exsrv.delete('/delete', (req, res) => {
             if(req.headers.authorization){
                 try {
@@ -230,8 +382,8 @@ const run = (fiCors, fiStack) =>{
                     res.send("Hubo un error en la consulta")
                 }
             }
-        })
-
+        })     
+           
     // Server Init
 
         exsrv.listen(port, () => {

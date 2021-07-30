@@ -1,3 +1,4 @@
 {
-    "origin": "*"
+    "origin": "*",
+    "methods": "GET,PUT,POST,DELETE"
 }
