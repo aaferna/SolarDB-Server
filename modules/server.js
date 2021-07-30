@@ -291,7 +291,6 @@ const run = (fiCors, fiStack) =>{
                         if(r != 0 && json.collection != undefined && json.query != undefined && json.type != undefined){
                             try{
 
-                                let response = {}
                                 let preresponse = []
 
                                 const returns = (data, cant) =>{
@@ -302,7 +301,6 @@ const run = (fiCors, fiStack) =>{
                                             data: data
                                         })
                                     } else { res.send({ status: 200, msg: "No se encontro el index"}) }
-                                    
                                 }
 
 
@@ -335,14 +333,88 @@ const run = (fiCors, fiStack) =>{
                                         returns (preresponse, map1)
                                     }
 
+                                    if(json.query.where){
+                                        let map1 = 0
+                                        let prepreresponse = []
+
+                                        datainStore.map( id => {
+
+                                            let data = indexDecode(solar.dbGetData(id, json.collection, fiStack.container).pop())
+
+                                            let data2 = data[json.query.where[0]]
+                                            let arg = json.query.where[1]
+                                            let ref = json.query.where[2]
+    
+                                            switch (arg) {
+                                                case "==":
+                                                    if(data2 == ref){
+                                                        let dataOk = data[json.query.where[0]]
+                                                        prepreresponse[map1] = {index: id, data: dataOk }
+                                                        map1++
+                                                    }
+                                                case "===":
+                                                    if(data2 === ref){
+                                                        let dataOk = data[json.query.where[0]]
+                                                        prepreresponse[map1] = {index: id, data: dataOk }
+                                                        map1++
+                                                    }
+                                                    break;
+                                                    case ">=":
+                                                        if(data2 >= ref){
+                                                            let dataOk = data[json.query.where[0]]
+                                                            prepreresponse[map1] = {index: id, data: dataOk }
+                                                            map1++
+                                                        }
+                                                        break;      
+                                                    case ">":
+                                                        if(data2 > ref){
+                                                            let dataOk = data[json.query.where[0]]
+                                                            prepreresponse[map1] = {index: id, data: dataOk }
+                                                            map1++
+                                                        }
+                                                        break;
+                                                    case "<=":
+                                                        if(data2 <= ref){
+                                                            let dataOk = data[json.query.where[0]]
+                                                            prepreresponse[map1] = {index: id, data: dataOk }
+                                                            map1++
+                                                        }
+                                                        break;      
+                                                    case "<":
+                                                        if(data2 < ref){
+                                                            let dataOk = data[json.query.where[0]]
+                                                            prepreresponse[map1] = {index: id, data: dataOk }
+                                                            map1++
+                                                        }
+                                                        break;         
+                                                    case "!=":
+                                                        if(data2 != ref){
+                                                            let dataOk = data[json.query.where[0]]
+                                                            prepreresponse[map1] = {index: id, data: dataOk }
+                                                            map1++
+                                                        }
+                                                        break;                                                   
+                                                default:
+                                                    break;
+                                            }
 
 
-                                } 
+                                        })
+
+                                        returns (prepreresponse, map1)
+
+
+                                    }
+
+
+                                } else{
+                                    res.send("Hubo un error en la consulta")
+                                }
 
 
                             }catch(err){
                                 console.log(err)
-                                res.send({ status: 200, msg: "No se actualizo el index"})
+                                res.send({ status: 200, msg: "No se encontro index"})
                             }
                         } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
                     } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
