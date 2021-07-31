@@ -1,7 +1,5 @@
 const solar = require("solardb-core")
 const express = require("express")
-const cors = require('cors');
-// const path = require('path');
 const jwt = require('jwt-simple');
 const generator = require('generate-password');
 
@@ -32,7 +30,7 @@ const init = (fiStack) =>{
 
 }
 
-const run = (fiCors, fiStack) =>{
+const run = (fiStack) =>{
 
     const tokenDecode = (tokhead) =>{
         try {
@@ -54,10 +52,6 @@ const run = (fiCors, fiStack) =>{
     // Express Server Init
         const port = fiStack.port
         const exsrv = express()
-        exsrv.use(cors(fiCors));
-        // exsrv.use(bodyParser.urlencoded({
-        //     extended: true
-        // }));
         exsrv.use(express.json());
         exsrv.disable('x-powered-by');
 

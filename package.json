@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/gusgeek/SolarDB-Server#readme",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.17.1",
     "generate-password": "^1.6.1",
     "jwt-simple": "^0.5.6",

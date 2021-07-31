@@ -1,6 +1,0 @@
-{
-    "port": "1802",
-    "container": "./container/",
-    "hashToken": "UUID",
-    "hashIndex": "UUID"
-}
