@@ -34,8 +34,14 @@ Este, es un Proyecto para la experiencia de la herramienta y creatividad. Busca 
 ### Creacion de Tokens Criptograficos
 Este esta pensado en crear un UUID generico y aleatorio para tener de llave para la encriptacion de Tokens y Datos que se guardan en la Base de Datos
 Si bien, hoy todo puede ser bulnerado de muchqas formas, este metodo provee un factor que facilita la instalacion.
-Al utilizar el tag `tokens` en una consola nos devolvera algo como esto
 
+Obtendremos este ejecutando la siguiente linea:
+- `npm test tokens`
+- `node index.js tokens`
+- `<Compilado> tokens`
+  
+De esa forma, obtendremos lo siguiente
+  
 ```
 Tokens Generados 
 
