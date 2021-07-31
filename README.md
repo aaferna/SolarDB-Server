@@ -11,3 +11,15 @@ Este, es un Proyecto para la experiencia de la herramienta y creatividad. Busca 
   <br>  <br>
   <a href="https://documenter.getpostman.com/view/10874443/TzseK74L">Ver documentacion de Uso</a>
 </p>
+
+
+<p align="center">
+  <br>
+  <bR>
+    <img src="https://img.shields.io/github/downloads/gusgeek/SolarDB-Server/total">  
+    <img src="https://img.shields.io/github/v/release/gusgeek/SolarDB-Server">  
+    <img src="https://img.shields.io/github/release-date/gusgeek/SolarDB-Server">  
+    <img src="https://img.shields.io/github/languages/code-size/gusgeek/SolarDB-Server">
+  <br><br>
+  <strong>:pencil2: con :heart:</strong>
+</p>
