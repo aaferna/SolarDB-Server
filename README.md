@@ -66,6 +66,33 @@ De esa forma, obtendremos lo siguiente
 }
 ```
 
+# Files de Configuracion
+Es necesario tener los archivos cors.json y stack.json, seran los que SolarDB utilice para trabajar.
+El directorio que tiene que tener es /config/cors.json y /config/cors.json
+
+### stack.json
+Este es el archivo de configuracion en el que estableceremos Tokens, Directorio donde se guardara la informacion y el Puerto de escucha.
+
+```json
+{
+    "port": "1802",
+    "container": "./container/",
+    "hashToken": "31bf5b0b-478b-4c65-b537-71938dbf9d55",
+    "hashIndex": "43e6325e-cf1c-42cc-b6c2-f08138aaa1b8"
+}
+```
+### cors.json
+<h1 align="center">Esta caracteristica sera eliminada en las proximas versiones</h1>
+Este es el archivo de configuracion para el manejo de Headers y Cors. Este por default viene con la siguiente configuracion:
+
+```json
+{
+    "origin": "*",
+    "methods": "GET,PUT,POST,DELETE"
+}
+```
+
+
 <p align="center">
   <br>
   <bR>
