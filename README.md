@@ -68,7 +68,7 @@ De esa forma, obtendremos lo siguiente
 
 # Files de Configuracion
 Es necesario tener los archivos cors.json y stack.json, seran los que SolarDB utilice para trabajar.
-El directorio que tiene que tener es /config/cors.json y /config/cors.json
+El directorio que tiene que tener es /config/cors.json y /config/cors.json y este debe estar justo al lado del ejecutor.
 
 ### stack.json
 Este es el archivo de configuracion en el que estableceremos Tokens, Directorio donde se guardara la informacion y el Puerto de escucha.
