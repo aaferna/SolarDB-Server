@@ -50,9 +50,9 @@ fd881bbf-bece-4a1c-83d9-f488fa0de10f
 De manera temporal y enfocado a que es una version en desarrollo, se planeo utilizar un comando para poder crear Usuarios, de manera aleatoria.
 
 Obtendremos este ejecutando la siguiente linea:
-- `npm test setup`
-- `node index.js setup`
-- `<Compilado> setup`
+- `npm test nuser`
+- `node index.js nuser`
+- `<Compilado> nuser`
   
 De esa forma, obtendremos lo siguiente
   
@@ -79,16 +79,10 @@ Este es el archivo de configuracion en el que estableceremos Tokens, Directorio 
     "hashIndex": "43e6325e-cf1c-42cc-b6c2-f08138aaa1b8"
 }
 ```
-### cors.json
-<h1 align="center">Esta caracteristica sera eliminada en las proximas versiones</h1>
-Este es el archivo de configuracion para el manejo de Headers y Cors. Este por default viene con la siguiente configuracion:
 
-```json
-{
-    "origin": "*",
-    "methods": "GET,PUT,POST,DELETE"
-}
-```
+Ptss:
+Si no creas el archivo, tan solo inicia el servicio que en el primer arranque creara la configuracion de maner automatica
+
 
 # Uso
 Para poder tener esta informacion es muy recomendable ver la documenacion de Postman: <a href="https://documenter.getpostman.com/view/10874443/TzseK74L">Ver documentacion de Uso</a>
