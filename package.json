@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Servidor de Base de Datos noSQL basado en SolarDB",
   "main": "index.js",
+  "bin": "index.js",
   "scripts": {
     "test": "node index.js"
   },

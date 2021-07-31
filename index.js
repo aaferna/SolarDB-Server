@@ -2,8 +2,7 @@ const server = require("./modules/server");
 const fs = require("fs");
 const path = require('path');
 const cmd = require('minimist')(process.argv.slice(2))
-
-const dirapp = path.resolve(__dirname)
+const deployPath = path.dirname(process.execPath);
 
 if(cmd._ == "tokens"){
 
@@ -13,10 +12,10 @@ if(cmd._ == "tokens"){
 
 } else {
 
-    if (fs.existsSync(dirapp + "/config/cors.json") && fs.existsSync(dirapp + "/config/stack.json")) {
+    if (fs.existsSync(path.join(deployPath, "/config/cors.json")) && fs.existsSync(path.join(deployPath, "/config/stack.json"))) {
 
-        const fiCors = require(dirapp + "/config/cors.json")
-        const fiStack = require(dirapp + "/config/stack.json")
+        const fiCors = require(path.join(deployPath,  "/config/cors.json"))
+        const fiStack = require(path.join(deployPath, "/config/stack.json"))
 
         if(cmd._ == "setup"){
             server.init(fiStack)
