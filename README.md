@@ -8,8 +8,6 @@
   <br>
 SolarDB Server es el motor de Base de Datos que usar SolarDBCore como motor CRUD, siendo SolarDB Server un DB NoSQL basado en API’s.  <br>
 Este, es un Proyecto para la experiencia de la herramienta y creatividad. Busca ser polifuncional, practica y rápida.
-  <br>  <br>
-  <a href="https://documenter.getpostman.com/view/10874443/TzseK74L">Ver documentacion de Uso</a>
 </p>
 
 #
@@ -92,6 +90,10 @@ Este es el archivo de configuracion para el manejo de Headers y Cors. Este por d
 }
 ```
 
+# Uso
+Para poder tener esta informacion es muy recomendable ver la documenacion de Postman: <a href="https://documenter.getpostman.com/view/10874443/TzseK74L">Ver documentacion de Uso</a>
+
+Tenga en cuenta que para tener el Token de uso, debera de [crear un usuario](https://github.com/gusgeek/SolarDB-Server#creacion-de-usuarios-y-tokens)
 
 <p align="center">
   <br>
