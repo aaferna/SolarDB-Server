@@ -432,7 +432,7 @@ const run = (fiCors, fiStack) =>{
                                     if(datainStore){
                                         res.send({
                                             status: 120,
-                                            msg: ""
+                                            msg: "Index Eliminado"
                                         })
                                     } else { res.send({ status: 200, msg: "No se encontro el index"}) }
                             }catch(err){
