@@ -29,6 +29,20 @@ Este, es un Proyecto para la experiencia de la herramienta y creatividad. Busca 
 - Podrás instalar SolarDB Server en tu Equipo mediante NodeJS mediante el comando `npm i`
 - Mediante la herramienta compilada para tu plataforma
 
+# Comandos
+
+### Creacion de Tokens Criptograficos
+Este esta pensado en crear un UUID generico y aleatorio para tener de llave para la encriptacion de Tokens y Datos que se guardan en la Base de Datos
+Si bien, hoy todo puede ser bulnerado de muchqas formas, este metodo provee un factor que facilita la instalacion.
+Al utilizar el tag `tokens` en una consola nos devolvera algo como esto
+
+```
+Tokens Generados 
+
+fd881bbf-bece-4a1c-83d9-f488fa0de10f
+8f15fb42-3e69-4b54-8863-3a60edfc2965
+```
+
 
 <p align="center">
   <br>
