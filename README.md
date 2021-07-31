@@ -12,6 +12,23 @@ Este, es un Proyecto para la experiencia de la herramienta y creatividad. Busca 
   <a href="https://documenter.getpostman.com/view/10874443/TzseK74L">Ver documentacion de Uso</a>
 </p>
 
+#
+
+
+<p align="center">
+  <br><br>
+  <strong>
+    Este proyecto se encuentra en fase experimental, puede sufrir cambios
+  </strong>
+  <br><br>
+</p>
+
+
+# Instalacion
+
+- Podrás instalar SolarDB Server en tu Equipo mediante NodeJS mediante el comando `npm i`
+- Mediante la herramienta compilada para tu plataforma
+
 
 <p align="center">
   <br>
