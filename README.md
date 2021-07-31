@@ -48,7 +48,23 @@ Tokens Generados
 fd881bbf-bece-4a1c-83d9-f488fa0de10f
 8f15fb42-3e69-4b54-8863-3a60edfc2965
 ```
+### Creacion de Usuarios y Tokens
+De manera temporal y enfocado a que es una version en desarrollo, se planeo utilizar un comando para poder crear Usuarios, de manera aleatoria.
 
+Obtendremos este ejecutando la siguiente linea:
+- `npm test setup`
+- `node index.js setup`
+- `<Compilado> setup`
+  
+De esa forma, obtendremos lo siguiente
+  
+```
+{
+  username: 'fNPpt',
+  password: 'XspkxvXCnZ2k',
+  token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ijc2NzEyNGUyMjY4NDY0ZDE4M2Q1ZDJlOGM2ZTE0Y2JlIg.NaxMjoQ4mja9yDF4uquYFpfD4QYV3-cXYhjAWNG2OIg'
+}
+```
 
 <p align="center">
   <br>
