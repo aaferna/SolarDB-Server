@@ -5,6 +5,8 @@ const generator = require('generate-password');
 
 const init = (fiStack) =>{
 
+    const { v4: uuidv4 } = require('uuid');
+
     const user = generator.generate({
         length: 5,
         numbers: true
@@ -14,10 +16,19 @@ const init = (fiStack) =>{
         numbers: true
     });
 
+    const tokn = jwt.encode(uuidv4(), fiStack.hashToken)
+
     const data = jwt.encode({
         username: user,
         password: password,
-        level: 1
+        token: tokn.split('.')[0]+tokn.split('.')[1],
+        key: tokn.split('.')[2],
+        permits: {
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": true
+        }
     }, fiStack.hashIndex);
 
     let r = solar.dbInsert(data, "Users", fiStack.container)
@@ -25,7 +36,7 @@ const init = (fiStack) =>{
     console.log("User", {
         username: user,
         password: password,
-        token: jwt.encode(r.id, fiStack.hashToken)
+        token: tokn.split('.')[2]
     })
 
 }
@@ -53,6 +64,7 @@ const run = (fiStack) =>{
         const port = fiStack.port
         const exsrv = express()
         exsrv.use(express.json());
+        exsrv.use(express.urlencoded({ extended: true }));
         exsrv.disable('x-powered-by');
 
     // Activity

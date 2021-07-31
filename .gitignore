@@ -80,3 +80,5 @@ package-lock.json
 container/
 config/stack.json
 notas
+solardb-server-linux
+solardb-server-macos

@@ -18,7 +18,7 @@ if(cmd._ == "tokens"){
 
         let configFile = {
             "port": "1802",
-            "container": "./data/",
+            "container": path.join(deployPath, "/data/"),
             "hashToken": uuidv4(),
             "hashIndex": uuidv4()
         }
