@@ -84,7 +84,6 @@ const run = (fiStack) =>{
         const exsrv = express()
         exsrv.use(express.json());
         exsrv.use(express.urlencoded({ extended: true }));
-        // exsrv.disable('x-powered-by');
         exsrv.use(helmet());
 
     // Activity
