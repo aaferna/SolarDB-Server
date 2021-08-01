@@ -103,31 +103,32 @@ const run = (fiStack) =>{
         exsrv.post('/insert', (req, res) => {
             if(req.headers.authorization){
                 try {
-                    const token = tokenDecode(req.headers.authorization)
-                    if(token != 0){
-                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
-                        const r = indexDecode( index )
-                        const json = req.body
-                        if(r != 0 && json.collection != undefined && json.data != undefined ){
-                            try{
-                                const data = jwt.encode(json.data, fiStack.hashIndex);
-                                const r = solar.dbInsert(data, json.collection, fiStack.container)
-                                if(r.id){
-                                    res.send({
-                                        status: 100,
-                                        msg: "Index Creado",
-                                        id: r.id
-                                    })
-                                } else { res.send({ status: 200, msg: "No se creo el index"}) }
-                            }catch(err){
-                                console.log(err)
-                                res.send({ status: 200, msg: "No se creo el index"})
-                            }
-                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
-                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                    const userVerify = tokenDecode(req.headers.authorization)
+                    if(userVerify != 0){
+                        if(userVerify.permits.create === true){
+                            if(req.body.collection != undefined && req.body.collection != "" && req.body.data != undefined){
+                                try{
+                                    const insert = solar.dbInsert(
+                                        jwt.encode(req.body.data, fiStack.hashIndex),
+                                        req.body.collection,
+                                        fiStack.container)
+                                    if(insert.id){
+                                        res.send({
+                                            status: 150,
+                                            msg: "Index Creado",
+                                            id: insert.id
+                                        })
+                                    } else { res.send({ status: 125, msg: "No se creo el index"}) }
+                                }catch(err){
+                                    // console.log(err)
+                                    res.send({ status: 125, msg: "No se creo el index"})
+                                }
+                            } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
+                        } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
+                    } else { res.send({ status: 201, msg: "Token es erroneo"}) }
                 } catch(err) {
-                    console.log(err)
-                    res.send("Hubo un error en la consulta")
+                    // console.log(err)
+                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
                 }
             }
         })
@@ -135,39 +136,36 @@ const run = (fiStack) =>{
         exsrv.put('/update', (req, res) => {
             if(req.headers.authorization){
                 try {
-                    const token = tokenDecode(req.headers.authorization)
-                    if(token != 0){
-                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
-                        const r = indexDecode( index )
-                        const json = req.body
-                        if(r != 0 && json.collection != undefined && json.data != undefined && json.id != undefined ){
-
-                            try{
-                                const data = jwt.encode(json.data, fiStack.hashIndex);
-                                const datainStore = solar.dbGetData( json.id, json.collection, fiStack.container).pop()
-                                if(datainStore == data){
-                                    res.send({ status: 110, msg: "Index Actualizado"})
-                                } else {
-                                    const r = solar.dbUpdate(data, json.id, json.collection, fiStack.container)
-                                    if(r.id){
-                                        res.send({
-                                            status: 110,
-                                            msg: "Index Actualizado",
-                                            id: r.id
-                                        })
-                                    } else { res.send({ status: 200, msg: "No se actualizo el index"}) }
+                    const userVerify = tokenDecode(req.headers.authorization)
+                    if(userVerify != 0){
+                        if(userVerify.permits.update === true){
+                            if(req.body.collection != undefined && req.body.collection != "" && 
+                                req.body.data != undefined && req.body.data != "" && 
+                                req.body.id != undefined && req.body.id != ""){
+                                try{
+                                    const data = jwt.encode(req.body.data, fiStack.hashIndex);
+                                    const datainStore = solar.dbGetData( req.body.id, req.body.collection, fiStack.container).pop()
+                                    if(datainStore == data){ res.send({ status: 161, msg: "Los datos guardados son iguales a los que propone"}) } 
+                                    else {
+                                        const r = solar.dbUpdate(data, req.body.id, req.body.collection, fiStack.container)
+                                        if(r.id){
+                                            res.send({
+                                                status: 160,
+                                                msg: "Los datos fueron guardados",
+                                                id: r.id
+                                            })
+                                        } else { res.send({ status: 130, msg: "No se actualizo el index"}) }
+                                    }
+                                }catch(err){
+                                     console.log(err)
+                                    res.send({ status: 204, msg: "Existe un inconveniente con la consulta", err: err})
                                 }
-                            }catch(err){
-                                console.log(err)
-                                res.send({ status: 200, msg: "No se actualizo el index"})
-                            }
-
-
-                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
-                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                            } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
+                        } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
+                    } else { res.send({ status: 201, msg: "Token es erroneo"}) }
                 } catch(err) {
-                    console.log(err)
-                    res.send("Hubo un error en la consulta")
+                    // console.log(err)
+                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
                 }
             }
         })
