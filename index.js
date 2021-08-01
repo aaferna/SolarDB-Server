@@ -2,7 +2,12 @@ const server = require("./modules/server");
 const fs = require("fs");
 const path = require('path');
 const cmd = require('minimist')(process.argv.slice(2))
-const deployPath = path.dirname(process.execPath);
+
+// const deployPath = path.dirname(process.execPath);
+
+const deployPath = "C:\\Users\\agust\\github\\SolarDB-Server\\"
+console.log(path.join(deployPath, "/config/"))
+
 
 if(cmd._ == "tokens"){
 
@@ -11,6 +16,7 @@ if(cmd._ == "tokens"){
     console.log(uuidv4()+"\n\n")
 
 } else if(cmd._ == 'setup') {
+    console.log(path.join(deployPath, "/config/"))
 
     try {
 
@@ -25,18 +31,18 @@ if(cmd._ == "tokens"){
 
         if (!fs.existsSync(path.join(deployPath, "/config/"))) {
             fs.mkdirSync(path.join(deployPath, "/config/"))
+            fs.writeFileSync(path.join(deployPath, "/config/stack.json"), JSON.stringify(configFile), 'utf8');
         } 
-        fs.writeFileSync(path.join(deployPath, "/config/stack.json"), JSON.stringify(configFile), 'utf8');
-        console.log("Archivo de Configuracion creado")
+        
+        // console.log("Archivo de Configuracion creado")
             
     } catch (err) {
 
         if (err.code === 'ENOENT') {
-        console.log({
-            code: err.code,
-            msj: "El directorio o archivo no existe2",
-        })
-
+            console.log({
+                code: err.code,
+                msj: "El directorio o archivo no existe2",
+            })
         } else {
             console.log({
                 code: err.code,

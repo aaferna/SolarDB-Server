@@ -2,6 +2,7 @@ const solar = require("solardb-core")
 const express = require("express")
 const jwt = require('jwt-simple');
 const generator = require('generate-password');
+const { validate: uuidValidate } = require('uuid');
 
 const init = (fiStack) =>{
 
@@ -21,7 +22,7 @@ const init = (fiStack) =>{
     const data = jwt.encode({
         username: user,
         password: password,
-        token: tokn.split('.')[0]+tokn.split('.')[1],
+        token: tokn.split('.')[0]+"."+tokn.split('.')[1],
         key: tokn.split('.')[2],
         permits: {
             "create": true,
@@ -43,13 +44,30 @@ const init = (fiStack) =>{
 
 const run = (fiStack) =>{
 
-    const tokenDecode = (tokhead) =>{
+    const tokenDecode = (head) =>{
         try {
-            const token = tokhead.split("Bearer ")[1]
-            return decoded = jwt.decode(token, fiStack.hashToken);
-        } catch(err) {
-            return 0
-        }
+            const indexes = solar.dbGetIndex("Users", fiStack.container)
+            let response
+            indexes.map(id => {
+
+                const datainStore = solar.dbGetData(id, "Users", fiStack.container).pop()
+                const preresponse = indexDecode(datainStore)
+                const tokhead = head.split("Bearer ")[1]
+
+                    if((datainStore[0].code != "ENOENT" || 
+                    preresponse != 0) &&
+                    preresponse.key == tokhead){
+
+                        if(uuidValidate(
+                        jwt.decode(preresponse.token+"."+tokhead, fiStack.hashToken))){
+                            response = { id: id, permits: preresponse.permits}
+                        } 
+
+                    } else { response = 0 }
+
+            })
+            return response
+        } catch(err) { return 0 }
     }
 
     const indexDecode = (data) =>{
@@ -76,7 +94,8 @@ const run = (fiStack) =>{
                 .status(403)
                 .send({ message: "Tu petición no tiene cabecera de autorización" });
             } else {
-                res.json({ service: 'Ok' })
+                
+                res.json({ service: 'Ok', user: tokenDecode(req.headers.authorization) })
             }
             
         })
@@ -422,7 +441,6 @@ const run = (fiStack) =>{
                 }
             }
         })
-
 
         exsrv.delete('/delete', (req, res) => {
             if(req.headers.authorization){
