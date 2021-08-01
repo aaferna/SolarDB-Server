@@ -1,5 +1,6 @@
 const solar = require("solardb-core")
 const express = require("express")
+const helmet = require("helmet");
 const jwt = require('jwt-simple');
 const generator = require('generate-password');
 const { validate: uuidValidate } = require('uuid');
@@ -83,7 +84,8 @@ const run = (fiStack) =>{
         const exsrv = express()
         exsrv.use(express.json());
         exsrv.use(express.urlencoded({ extended: true }));
-        exsrv.disable('x-powered-by');
+        // exsrv.disable('x-powered-by');
+        exsrv.use(helmet());
 
     // Activity
 
@@ -94,7 +96,6 @@ const run = (fiStack) =>{
                 .status(403)
                 .send({ message: "Tu petición no tiene cabecera de autorización" });
             } else {
-                
                 res.json({ service: 'Ok', user: tokenDecode(req.headers.authorization) })
             }
             
