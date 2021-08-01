@@ -82,9 +82,9 @@ const run = (fiStack) =>{
     // Express Server Init
         const port = fiStack.port
         const exsrv = express()
-        exsrv.use(express.json());
-        exsrv.use(express.urlencoded({ extended: true }));
-        exsrv.use(helmet());
+        exsrv.use(express.json())
+        exsrv.use(express.urlencoded({ extended: true }))
+        exsrv.use(helmet())
 
     // Activity
 
@@ -157,7 +157,7 @@ const run = (fiStack) =>{
                                         } else { res.send({ status: 80, msg: "No se actualizo el index"}) }
                                     }
                                 }catch(err){
-                                     console.log(err)
+                                    //  console.log(err)
                                     res.send({ status: 204, msg: "Existe un inconveniente con la consulta", err: err})
                                 }
                             } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
@@ -210,8 +210,8 @@ const run = (fiStack) =>{
                                         })
                                     } else { res.send({ status: 85, msg: "No se encontro el index"}) }
                                 }catch(err){
-                                    console.log(err)
-                                    res.send({ status: 204, msg: "No se actualizo el index"})
+                                    // console.log(err)
+                                    res.send({ status: 204, msg: "Existe un inconveniente con la consulta", err: err})
                                 }
                             } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
                         } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
@@ -226,76 +226,74 @@ const run = (fiStack) =>{
         exsrv.get('/select/search/specific', (req, res) => {
             if(req.headers.authorization){
                 try {
-                    const token = tokenDecode(req.headers.authorization)
-                    if(token != 0){
-                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
-                        const r = indexDecode( index )
-                        const json = req.body
-                        if(r != 0 && json.collection != undefined && json.tag != undefined  && json.type != undefined){
-
-                            try{
-
-                                let datainStore
-                                let response
-                                let jsonData = {}; 
-                                let index = 0
-
-                                let indexes = solar.dbGetIndex(json.collection, fiStack.container)
-
-                                if (json.type === "latest" || json.type === ""){
-
-                                    indexes.map(id => {
-                                        datainStore = solar.dbGetData(id, json.collection, fiStack.container).pop()
-                                        let ref = 0
-                                        let predata = {}
-                                                preresponse = indexDecode(datainStore)
-                                                if(datainStore[0].code != "ENOENT" || preresponse != 0){
-                                                    predata[ref] = { "data" : preresponse[json.tag] }
-                                                    ref ++
-                                                } else { response = 0 }
-                                        jsonData[index] = { "index": id, "history" : predata }
-                                        index ++
-                                    })
-                                    response = jsonData
-
-                                } else if (json.type === "all"){
-
-                                    indexes.map(id => {
-                                        datainStore = solar.dbGetData(id, json.collection, fiStack.container)
-                                        let ref = 0
-                                        let predata = {}
-                                            datainStore.map(item =>{
-                                                preresponse = indexDecode(item)
-                                                if(datainStore[0].code != "ENOENT" || preresponse != 0){
-                                                    predata[ref] = { "data" : preresponse[json.tag] }
-                                                    ref ++
-                                                } else { response = 0 }
-                                            })
-                                        jsonData[index] = { "index": id, "history" : predata }
-                                        index ++
-                                    })
-                                    response = jsonData
-
+                    const userVerify = tokenDecode(req.headers.authorization)
+                    if(userVerify != 0){
+                        if(userVerify.permits.create === true){
+                            if(req.body.collection != undefined && req.body.collection != "" && 
+                            req.body.type != undefined && req.body.type != ""){
+                                try{
+            
+                                    let datainStore
+                                    let response
+                                    let jsonData = {}; 
+                                    let index = 0
+                
+                                    let indexes = solar.dbGetIndex(req.body.collection, fiStack.container)
+                
+                                    if (req.body.type === "latest"){
+                
+                                        indexes.map(id => {
+                                            datainStore = solar.dbGetData(id, req.body.collection, fiStack.container).pop()
+                                            let ref = 0
+                                            let predata = {}
+                                                    preresponse = indexDecode(datainStore)
+                                                    if(datainStore[0].code != "ENOENT" || preresponse != 0){
+                                                        predata[ref] = { "data" : preresponse[req.body.tag] }
+                                                        ref ++
+                                                    } else { response = 0 }
+                                            jsonData[index] = { "index": id, "history" : predata }
+                                            index ++
+                                        })
+                                        response = jsonData
+                
+                                    } else if (req.body.type === "all"){
+                
+                                        indexes.map(id => {
+                                            datainStore = solar.dbGetData(id, req.body.collection, fiStack.container)
+                                            let ref = 0
+                                            let predata = {}
+                                                datainStore.map(item =>{
+                                                    preresponse = indexDecode(item)
+                                                    if(datainStore[0].code != "ENOENT" || preresponse != 0){
+                                                        predata[ref] = { "data" : preresponse[req.body.tag] }
+                                                        ref ++
+                                                    } else { response = 0 }
+                                                })
+                                            jsonData[index] = { "index": id, "history" : predata }
+                                            index ++
+                                        })
+                                        response = jsonData
+                
+                                    }
+                
+                                    if(response != 0){
+                                        res.send({
+                                            status: 180,
+                                            tag: req.body.tag,
+                                            data: response
+                                        })
+                                    } else { res.send({ status: 90, msg: "No se encontraron resultados"}) }
+                
+                                }catch(err){
+                                    // console.log(err)
+                                    res.send({ status: 204, msg: "Existe un inconveniente con la consulta", err: err})
                                 }
-
-                                if(response != 0){
-                                    res.send({
-                                        status: 120,
-                                        tag: json.tag,
-                                        data: response
-                                    })
-                                } else { res.send({ status: 200, msg: "No se encontro el index"}) }
-
-                            }catch(err){
-                                console.log(err)
-                                res.send({ status: 200, msg: "No se actualizo el index"})
-                            }
-
-                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
-                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                            } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
+                        } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
+                    } else { res.send({ status: 201, msg: "Token es erroneo"}) }
                 } catch(err) {
-                    console.log(err)
-                    res.send("Hubo un error en la consulta")
+                    // console.log(err)
+                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
                 }
             }
         })
@@ -303,136 +301,120 @@ const run = (fiStack) =>{
         exsrv.get('/select/query', (req, res) => {
             if(req.headers.authorization){
                 try {
-                    const token = tokenDecode(req.headers.authorization)
-                    if(token != 0){
-                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
-                        const r = indexDecode( index )
-                        const json = req.body
-                        if(r != 0 && json.collection != undefined && json.query != undefined && json.type != undefined){
-                            try{
-
-                                const returns = (data, cant) =>{
-                                    if(data != 0){
-                                        res.send({
-                                            status: 120,
-                                            total: cant,
-                                            data: data
-                                        })
-                                    } else { res.send({ status: 200, msg: "No se encontro el index"}) }
-                                }
-
-                                if (json.type === "latest" || json.type === ""){
-
-                                    let datainStore = solar.dbGetIndex(json.collection, fiStack.container)
-
-                                    if(json.query.keys){
-                                        let map1 = 0
-
-                                        datainStore.map( id => {
-
-                                            let prepreresponse = []
-                                            let map2 = 0
-                                            let data = indexDecode(solar.dbGetData(id, json.collection, fiStack.container).pop())
-
-                                                json.query.keys.map(key => {
-                                                    if(data[key]){
-                                                        prepreresponse[map2] = data[key]
-                                                        map2++
-                                                    } 
-                                                })
-
-                                            preresponse[map1] = { index: id, data: prepreresponse }
-                                            map1 ++
-
-                                        })
-
-                                        returns (preresponse, map1)
+                    const userVerify = tokenDecode(req.headers.authorization)
+                    if(userVerify != 0){
+                        if(userVerify.permits.read === true){
+                            if(req.body.collection != undefined && req.body.collection != "" && 
+                            req.body.type != undefined && req.body.type != ""){
+                                try{
+                                    const returns = (data, cant) =>{
+                                        if(data != 0){
+                                            res.send({
+                                                status: 190,
+                                                total: cant,
+                                                data: data
+                                            })
+                                        } else { res.send({ status: 95, msg: "No se encontraron datos"}) }
                                     }
 
-                                    if(json.query.where){
-                                        let map1 = 0
-                                        let prepreresponse = []
+                                    if (req.body.type === "latest"){
 
-                                        datainStore.map( id => {
+                                        let datainStore = solar.dbGetIndex(req.body.collection, fiStack.container)
 
-                                            let data = indexDecode(solar.dbGetData(id, json.collection, fiStack.container).pop())
+                                        if(req.body.query.keys){
+                                            let map1 = 0
+                                            let preresponse = []
+                                            datainStore.map( id => {
+                                                let prepreresponse = []
+                                                let map2 = 0
+                                                let data = indexDecode(solar.dbGetData(id, req.body.collection, fiStack.container).pop())
+                                                    req.body.query.keys.map(key => {
+                                                        if(data[key]){
+                                                            prepreresponse[map2] = data[key]
+                                                            map2++
+                                                            preresponse[map1] = { index: id, data: prepreresponse }
+                                                            map1 ++
+                                                        } 
+                                                    })
+                                                    
+                                            })
+                                            returns (preresponse, map1)
+                                        }
 
-                                            let data2 = data[json.query.where[0]]
-                                            let arg = json.query.where[1]
-                                            let ref = json.query.where[2]
-    
-                                            switch (arg) {
-                                                case "==":
-                                                    if(data2 == ref){
-                                                        let dataOk = data[json.query.where[0]]
-                                                        prepreresponse[map1] = {index: id, data: dataOk }
-                                                        map1++
-                                                    }
-                                                case "===":
-                                                    if(data2 === ref){
-                                                        let dataOk = data[json.query.where[0]]
-                                                        prepreresponse[map1] = {index: id, data: dataOk }
-                                                        map1++
-                                                    }
-                                                    break;
-                                                    case ">=":
-                                                        if(data2 >= ref){
-                                                            let dataOk = data[json.query.where[0]]
+                                        if(req.body.query.where){
+                                            let map1 = 0
+                                            let prepreresponse = []
+                                            datainStore.map( id => {
+                                                let data = indexDecode(solar.dbGetData(id, req.body.collection, fiStack.container).pop())
+                                                let data2 = data[req.body.query.where[0]]
+                                                let arg = req.body.query.where[1]
+                                                let ref = req.body.query.where[2]
+                                                switch (arg) {
+                                                    case "==":
+                                                        if(data2 == ref){
+                                                            let dataOk = data[req.body.query.where[0]]
                                                             prepreresponse[map1] = {index: id, data: dataOk }
                                                             map1++
                                                         }
-                                                        break;      
-                                                    case ">":
-                                                        if(data2 > ref){
-                                                            let dataOk = data[json.query.where[0]]
+                                                    case "===":
+                                                        if(data2 === ref){
+                                                            let dataOk = data[req.body.query.where[0]]
                                                             prepreresponse[map1] = {index: id, data: dataOk }
                                                             map1++
                                                         }
                                                         break;
-                                                    case "<=":
-                                                        if(data2 <= ref){
-                                                            let dataOk = data[json.query.where[0]]
-                                                            prepreresponse[map1] = {index: id, data: dataOk }
-                                                            map1++
-                                                        }
-                                                        break;      
-                                                    case "<":
-                                                        if(data2 < ref){
-                                                            let dataOk = data[json.query.where[0]]
-                                                            prepreresponse[map1] = {index: id, data: dataOk }
-                                                            map1++
-                                                        }
-                                                        break;         
-                                                    case "!=":
-                                                        if(data2 != ref){
-                                                            let dataOk = data[json.query.where[0]]
-                                                            prepreresponse[map1] = {index: id, data: dataOk }
-                                                            map1++
-                                                        }
-                                                        break;                                                   
-                                                default:
-                                                    break;
-                                            }
-
-
-                                        })
-
-                                        returns (prepreresponse, map1)
-
-
-                                    }
-
-                                } else { res.send({ status: 200, msg: "No se encontro index"}) }
-
-                            }catch(err){
-                                console.log(err)
-                                res.send({ status: 200, msg: "No se encontro index"})
-                            }
-                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
-                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                                                        case ">=":
+                                                            if(data2 >= ref){
+                                                                let dataOk = data[req.body.query.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;      
+                                                        case ">":
+                                                            if(data2 > ref){
+                                                                let dataOk = data[req.body.query.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;
+                                                        case "<=":
+                                                            if(data2 <= ref){
+                                                                let dataOk = data[req.body.query.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;      
+                                                        case "<":
+                                                            if(data2 < ref){
+                                                                let dataOk = data[req.body.query.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;         
+                                                        case "!=":
+                                                            if(data2 != ref){
+                                                                let dataOk = data[req.body.query.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;                                                   
+                                                    default:
+                                                        break;
+                                                }
+                                            })
+                                            returns (prepreresponse, map1)
+                                        }
+                                    } else { res.send({ status: 95, msg: "No se encontraron datos"}) }
+                                }catch(err){
+                                    // console.log(err)
+                                    res.send({ status: 204, msg: "Existe un inconveniente con la consulta", err: err})
+                                }
+                            } else { send({ status: 203, msg: "Fallo la consulta: consulta mal armada"})  }
+                        } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
+                    } else { res.send({ status: 201, msg: "Token es erroneo"}) }
                 } catch(err) {
-                    console.log(err)
-                    res.send("Hubo un error en la consulta")
+                    // console.log(err)
+                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
                 }
             }
         })
@@ -440,29 +422,26 @@ const run = (fiStack) =>{
         exsrv.delete('/delete', (req, res) => {
             if(req.headers.authorization){
                 try {
-                    const token = tokenDecode(req.headers.authorization)
-                    if(token != 0){
-                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
-                        const r = indexDecode( index )
-                        const json = req.body
-                        if(r != 0 && json.collection != undefined && json.id != undefined ){
-                            try{
-                                const datainStore = solar.dbDeleteData(json.id, json.collection, fiStack.container)
-                                    if(datainStore){
-                                        res.send({
-                                            status: 120,
-                                            msg: "Index Eliminado"
-                                        })
-                                    } else { res.send({ status: 200, msg: "No se encontro el index"}) }
-                            }catch(err){
-                                console.log(err)
-                                res.send({ status: 200, msg: "No se actualizo el index"})
-                            }
-                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
-                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                    const userVerify = tokenDecode(req.headers.authorization)
+                    if(userVerify != 0){
+                        if(userVerify.permits.delete === true){
+                            if(req.body.collection != undefined && req.body.collection != "" && req.body.id != undefined && req.body.id != ""){
+                                try{
+                                    const datainStore = solar.dbDeleteData(req.body.id, req.body.collection, fiStack.container)
+                                        if(datainStore === 1){
+                                            res.send({
+                                                status: 140,
+                                                msg: "Index Eliminado"
+                                            })
+                                        } else { res.send({ status: 70, msg: "No se encontro el index"}) }
+                                }catch(err){
+                                    res.send({ status: 204, msg: "No se actualizo el index"})
+                                }
+                            } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
+                        } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
+                    } else { res.send({ status: 201, msg: "Token es erroneo"}) }
                 } catch(err) {
-                    console.log(err)
-                    res.send("Hubo un error en la consulta")
+                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
                 }
             }
         })     
