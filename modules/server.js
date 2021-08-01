@@ -118,10 +118,10 @@ const run = (fiStack) =>{
                                             msg: "Index Creado",
                                             id: insert.id
                                         })
-                                    } else { res.send({ status: 125, msg: "No se creo el index"}) }
+                                    } else { res.send({ status: 75, msg: "No se creo el index"}) }
                                 }catch(err){
                                     // console.log(err)
-                                    res.send({ status: 125, msg: "No se creo el index"})
+                                    res.send({ status: 204, msg: "No se creo el index"})
                                 }
                             } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
                         } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
@@ -154,7 +154,7 @@ const run = (fiStack) =>{
                                                 msg: "Los datos fueron guardados",
                                                 id: r.id
                                             })
-                                        } else { res.send({ status: 130, msg: "No se actualizo el index"}) }
+                                        } else { res.send({ status: 80, msg: "No se actualizo el index"}) }
                                     }
                                 }catch(err){
                                      console.log(err)
@@ -173,55 +173,52 @@ const run = (fiStack) =>{
         exsrv.get('/select', (req, res) => {
             if(req.headers.authorization){
                 try {
-                    const token = tokenDecode(req.headers.authorization)
-                    if(token != 0){
-                        const index = solar.dbGetData( token, "Users", fiStack.container ).pop()
-                        const r = indexDecode( index )
-                        const json = req.body
-                        if(r != 0 && json.collection != undefined && json.id != undefined && json.type != undefined || json.type != "" ){
-                            try{
-
-                                let datainStore
-                                let response
-
-                                if (json.type === "latest" || json.type === ""){
-
-                                    datainStore = solar.dbGetData(json.id, json.collection, fiStack.container).pop()
-                                    response = indexDecode(datainStore)
-
-                                } else if (json.type === "all"){
-
-                                    let jsonData = {}; 
-                                    let index = 0
-
-                                    datainStore = solar.dbGetData(json.id, json.collection, fiStack.container)
-
-                                    if(datainStore[0].code != "ENOENT"){
-                                        datainStore.map(itm => {
-                                            jsonData[index] = indexDecode(itm)
-                                            index ++
-                                        })
-                                        response = jsonData
-                                    } else { response = 0 }
-                                    
-                                }
-
+                    const userVerify = tokenDecode(req.headers.authorization)
+                    if(userVerify != 0){
+                        if(userVerify.permits.read === true){
+                            if(req.body.collection != undefined && req.body.collection != "" && 
+                            req.body.type != undefined && req.body.type != "" && 
+                            req.body.id != undefined && req.body.id != ""){
+                                try{
+                                    let datainStore
+                                    let response
+                                    if (req.body.type === "latest"){
+                
+                                        datainStore = solar.dbGetData(req.body.id, req.body.collection, fiStack.container).pop()
+                                        response = indexDecode(datainStore)
+                
+                                    } else if (req.body.type === "all"){
+                
+                                        let jsonData = {}; 
+                                        let index = 0
+                
+                                        datainStore = solar.dbGetData(req.body.id, req.body.collection, fiStack.container)
+                
+                                        if(datainStore[0].code != "ENOENT"){
+                                            datainStore.map(itm => {
+                                                jsonData[index] = indexDecode(itm)
+                                                index ++
+                                            })
+                                            response = jsonData
+                                        } else { response = 0 }
+                                        
+                                    }
                                     if(response != 0){
                                         res.send({
-                                            status: 120,
+                                            status: 170,
                                             data: response
                                         })
-                                    } else { res.send({ status: 200, msg: "No se encontro el index"}) }
-
-                            }catch(err){
-                                console.log(err)
-                                res.send({ status: 200, msg: "No se actualizo el index"})
-                            }
-                        } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo o consulta mal armada"}) }
-                    } else { res.send({ status: 200, msg: "Fallo la consulta: Token erroneo"}) }
+                                    } else { res.send({ status: 85, msg: "No se encontro el index"}) }
+                                }catch(err){
+                                    console.log(err)
+                                    res.send({ status: 204, msg: "No se actualizo el index"})
+                                }
+                            } else { res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) }
+                        } else { res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) }
+                    } else { res.send({ status: 201, msg: "Token es erroneo"}) }
                 } catch(err) {
-                    console.log(err)
-                    res.send("Hubo un error en la consulta")
+                    // console.log(err)
+                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
                 }
             }
         })
