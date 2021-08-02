@@ -70,17 +70,13 @@ User {
 
 Puede configurar este de manera manual siguiendo la especificacion de abajo, o colocando `<ejecutor> setup` de manera automatica creara el archivo de configuracion por usted.
 
-## Files
-### stack.json
-Este es el archivo de configuracion en el que estableceremos Tokens, Directorio donde se guardara la informacion y el Puerto de escucha.
+Este es el archivo de configuracion en el que estableceremos los Tokens, Directorio donde se guardara la informacion y el Puerto de escucha. Este se establece en .env (Envoirement)
 
-```json
-{
-    "port": "1802",
-    "container": "./container/",
-    "hashToken": "31bf5b0b-478b-4c65-b537-71938dbf9d55",
-    "hashIndex": "43e6325e-cf1c-42cc-b6c2-f08138aaa1b8"
-}
+```js
+  PORT="1802"
+  CONTAINER="C:\\Users\\agust\\Desktop\\Nueva carpeta (2)\\data\\"
+  HTOKEN="da05774b-01a5-4b14-adff-07a1304f6f69"
+  HINDEX="349e83fd-9128-4251-beff-5532a725afaa"
 ```
 
 Ptss:
