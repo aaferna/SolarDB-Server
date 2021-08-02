@@ -6,7 +6,7 @@ const cmd = require('minimist')(process.argv.slice(2))
 const deployPath = path.dirname(process.execPath);
 
 // const deployPath = "C:\\Users\\agust\\github\\SolarDB-Server\\"
-console.log(path.join(deployPath, "/config/"))
+// console.log(path.join(deployPath, "/config/"))
 
 
 if(cmd._ == "tokens"){
@@ -16,7 +16,7 @@ if(cmd._ == "tokens"){
     console.log(uuidv4()+"\n\n")
 
 } else if(cmd._ == 'setup') {
-    console.log(path.join(deployPath, "/config/"))
+    // console.log(path.join(deployPath, "/config/"))
 
     try {
 
