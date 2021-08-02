@@ -50,24 +50,27 @@ fd881bbf-bece-4a1c-83d9-f488fa0de10f
 De manera temporal y enfocado a que es una version en desarrollo, se planeo utilizar un comando para poder crear Usuarios, de manera aleatoria.
 
 Obtendremos este ejecutando la siguiente linea:
-- `npm test setup`
-- `node index.js setup`
-- `<Compilado> setup`
+- `npm test nuser`
+- `node index.js nuser`
+- `<Compilado> nuser`
   
 De esa forma, obtendremos lo siguiente
   
 ```
-{
-  username: 'fNPpt',
-  password: 'XspkxvXCnZ2k',
-  token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ijc2NzEyNGUyMjY4NDY0ZDE4M2Q1ZDJlOGM2ZTE0Y2JlIg.NaxMjoQ4mja9yDF4uquYFpfD4QYV3-cXYhjAWNG2OIg'
+User {
+  username: '86Dtz',
+  password: 'lLYhhZDTmmko',
+  token: 'KkD7gAe3bcZvsPFJUr1KLy-pJRJD2C3daeIyMVW50Eo'
 }
 ```
 
-# Files de Configuracion
-Es necesario tener los archivos cors.json y stack.json, seran los que SolarDB utilice para trabajar.
-El directorio que tiene que tener es /config/cors.json y /config/cors.json y este debe estar justo al lado del ejecutor.
+# Configuracion
+- Es necesario tener el archivo de configuacion stack.json, este es el que tendra la configuracion del servidor.
+- El directorio que tiene que tener es /config/cors.json y este debe estar justo al lado del ejecutor.
 
+Puede configurar este de manera manual siguiendo la especificacion de abajo, o colocando `<ejecutor> setup` de manera automatica creara el archivo de configuracion por usted.
+
+## Files
 ### stack.json
 Este es el archivo de configuracion en el que estableceremos Tokens, Directorio donde se guardara la informacion y el Puerto de escucha.
 
@@ -79,16 +82,25 @@ Este es el archivo de configuracion en el que estableceremos Tokens, Directorio 
     "hashIndex": "43e6325e-cf1c-42cc-b6c2-f08138aaa1b8"
 }
 ```
-### cors.json
-<h1 align="center">Esta caracteristica sera eliminada en las proximas versiones</h1>
-Este es el archivo de configuracion para el manejo de Headers y Cors. Este por default viene con la siguiente configuracion:
 
-```json
-{
-    "origin": "*",
-    "methods": "GET,PUT,POST,DELETE"
-}
-```
+Ptss:
+Si no creas el archivo, tan solo inicia el servicio que en el primer arranque creara la configuracion de maner automatica
+
+# Seguridad
+(En construccion)
+
+SolarDB esta basado en un CRUD de Files y Express.js. Es importante entender que el contexto donde este instalado SolarDB debera ser controlado y aseguridado contra ataques. 
+
+De manera propia, SolarDB debe tener configurado Tokens de encriptacion para los usuarios y para los datos. Este utilizara JSON WebToken para encriptar y desencriptar los datos.
+
+Los datos que usted ingrese o solicite, se veran en JSON para el tratado. Pero una vez guarde un dato sea por Insert o Update, este se encripta de forma automatica con un Hash HS256, permitiendo una capa de seguridad adicional.
+
+Utilizamos Helmet para disponer de un control de Cabeceras HTML, que nos prevee de ataques clasicos como son los CORS o XSS Filter entre otros
+
+## Consejos
+- Indique un directorio para las colecciones lejos o poco accesible 
+- SolarDB pondra claves de encriptacion UUID Random, puede especificar claves criptograficas mas fuertes
+- Evalue utilizar un Proxy Reverso para ocultar o manejar la exposicion a la Internet
 
 # Uso
 Para poder tener esta informacion es muy recomendable ver la documenacion de Postman: <a href="https://documenter.getpostman.com/view/10874443/TzseK74L">Ver documentacion de Uso</a>
