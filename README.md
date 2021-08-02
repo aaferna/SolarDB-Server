@@ -79,9 +79,6 @@ Este es el archivo de configuracion en el que estableceremos los Tokens, Directo
   HINDEX="349e83fd-9128-4251-beff-5532a725afaa"
 ```
 
-Ptss:
-Si no creas el archivo, tan solo inicia el servicio que en el primer arranque creara la configuracion de maner automatica
-
 # Seguridad
 (En construccion)
 
