@@ -3,9 +3,9 @@ const fs = require("fs");
 const path = require('path');
 const cmd = require('minimist')(process.argv.slice(2))
 
-// const deployPath = path.dirname(process.execPath);
+const deployPath = path.dirname(process.execPath);
 
-const deployPath = "C:\\Users\\agust\\github\\SolarDB-Server\\"
+// const deployPath = "C:\\Users\\agust\\github\\SolarDB-Server\\"
 console.log(path.join(deployPath, "/config/"))
 
 
