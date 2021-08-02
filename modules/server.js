@@ -5,7 +5,7 @@ const jwt = require('jwt-simple');
 const generator = require('generate-password');
 const { validate: uuidValidate } = require('uuid');
 
-const init = (fiStack) =>{
+const nuser = (fiStack) =>{
 
     const { v4: uuidv4 } = require('uuid');
 
@@ -455,4 +455,4 @@ const run = (fiStack) =>{
 }
 
 exports.run = run;
-exports.init = init;
+exports.nuser = nuser;
