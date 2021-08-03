@@ -6,8 +6,7 @@
   <img width="500" src="https://github.com/gusgeek/SolarDB-Server/blob/main/logo.svg">
   <br>
   <br>
-SolarDB Server es el motor de Base de Datos que usar SolarDBCore como motor CRUD, siendo SolarDB Server un DB NoSQL basado en API’s.  <br>
-Este, es un Proyecto para la experiencia de la herramienta y creatividad. Busca ser polifuncional, practica y rápida.
+SolarDB Server es un servidor de Base de Datos que usar SolarDB Core como motor, siendo este un NoSQL basado en API’s.  <br/>
 </p>
 
 #
@@ -30,15 +29,15 @@ Este, es un Proyecto para la experiencia de la herramienta y creatividad. Busca 
 # Comandos
 
 ### Creacion de Tokens Criptograficos
-Este esta pensado en crear un UUID generico y aleatorio para tener de llave para la encriptacion de Tokens y Datos que se guardan en la Base de Datos
-Si bien, hoy todo puede ser bulnerado de muchqas formas, este metodo provee un factor que facilita la instalacion.
+Esta pensado para crear un UUID generico y aleatorio para trabajar la encriptacion de Tokens y Datos que se guardan en la Base de Datos.
+Si bien, hoy todo puede ser vulnerado de muchas formas, este metodo provee un factor que facilita la obtención de claves para este propósito, sin necesidades de reconfigurar la aplicación.
 
 Obtendremos este ejecutando la siguiente linea:
 - `npm test tokens`
 - `node index.js tokens`
 - `<Compilado> tokens`
   
-De esa forma, obtendremos lo siguiente
+Obtendremos lo siguiente
   
 ```
 Tokens Generados 
@@ -46,6 +45,7 @@ Tokens Generados
 fd881bbf-bece-4a1c-83d9-f488fa0de10f
 8f15fb42-3e69-4b54-8863-3a60edfc2965
 ```
+
 ### Creacion de Usuarios y Tokens
 De manera temporal y enfocado a que es una version en desarrollo, se planeo utilizar un comando para poder crear Usuarios, de manera aleatoria.
 
@@ -65,12 +65,11 @@ User {
 ```
 
 # Configuracion
-- Es necesario tener el archivo de configuacion stack.json, este es el que tendra la configuracion del servidor.
-- El directorio que tiene que tener es /config/cors.json y este debe estar justo al lado del ejecutor.
+- Es necesario tener el archivo de configuacion .env, este es el que tendra la configuracion del servidor
 
 Puede configurar este de manera manual siguiendo la especificacion de abajo, o colocando `<ejecutor> setup` de manera automatica creara el archivo de configuracion por usted.
 
-Este es el archivo de configuracion en el que estableceremos los Tokens, Directorio donde se guardara la informacion y el Puerto de escucha. Este se establece en .env (Envoirement)
+Este es el archivo de configuracion en el que estableceremos los Tokens, Directorio donde se guardara la informacion y el Puerto de escucha. 
 
 ```js
   PORT="1802"
