@@ -33,8 +33,6 @@ Esta pensado para crear un UUID generico y aleatorio para trabajar la encriptaci
 Si bien, hoy todo puede ser vulnerado de muchas formas, este metodo provee un factor que facilita la obtención de claves para este propósito, sin necesidades de reconfigurar la aplicación.
 
 Obtendremos este ejecutando la siguiente linea:
-- `npm test tokens`
-- `node index.js tokens`
 - `<Compilado> tokens`
   
 Obtendremos lo siguiente
@@ -50,8 +48,6 @@ fd881bbf-bece-4a1c-83d9-f488fa0de10f
 De manera temporal y enfocado a que es una version en desarrollo, se planeo utilizar un comando para poder crear Usuarios, de manera aleatoria.
 
 Obtendremos este ejecutando la siguiente linea:
-- `npm test nuser`
-- `node index.js nuser`
 - `<Compilado> nuser`
   
 De esa forma, obtendremos lo siguiente
@@ -65,33 +61,36 @@ User {
 ```
 
 # Configuracion
-- Es necesario tener el archivo de configuacion .env, este es el que tendra la configuracion del servidor
+
+- Es necesario tener el archivo de configuacion .env, este junto con el ejecutable. Este es el que tendra la configuracion del servidor
 
 Puede configurar este de manera manual siguiendo la especificacion de abajo, o colocando `<ejecutor> setup` de manera automatica creara el archivo de configuracion por usted.
 
-Este es el archivo de configuracion en el que estableceremos los Tokens, Directorio donde se guardara la informacion y el Puerto de escucha. 
+Este es el archivo de configuracion en el que estableceremos los Tokens, Directorio de Datos y Log junto al Puerto de escucha. 
+
 
 ```js
-  PORT="1802"
-  CONTAINER="C:\\Users\\agust\\Desktop\\Nueva carpeta (2)\\data\\"
-  HTOKEN="da05774b-01a5-4b14-adff-07a1304f6f69"
-  HINDEX="349e83fd-9128-4251-beff-5532a725afaa"
+PORT="1802"
+CONTAINER="C:\\Users\\agust\\Desktop\\Nueva carpeta (2)\\data\\"
+LOG="C:\\Users\\agust\\Desktop\\Nueva carpeta (2)\\LOG\\"
+HTOKEN="da05774b-01a5-4b14-adff-07a1304f6f69"
+HINDEX="349e83fd-9128-4251-beff-5532a725afaa"
 ```
 
 # Seguridad
 (En construccion)
 
-SolarDB esta basado en un CRUD de Files y Express.js. Es importante entender que el contexto donde este instalado SolarDB debera ser controlado y aseguridado contra ataques. 
+- SolarDB esta basado en un CRUD de Files y Express.js. Es importante entender que el contexto donde este instalado SolarDB debera ser controlado y aseguridado contra ataques. 
 
-De manera propia, SolarDB debe tener configurado Tokens de encriptacion para los usuarios y para los datos. Este utilizara JSON WebToken para encriptar y desencriptar los datos.
+- De manera propia, SolarDB debe tener configurado Tokens de encriptacion para los usuarios y para los datos. Este utilizara JSON WebToken para encriptar y desencriptar los datos.
 
-Los datos que usted ingrese o solicite, se veran en JSON para el tratado. Pero una vez guarde un dato sea por Insert o Update, este se encripta de forma automatica con un Hash HS256, permitiendo una capa de seguridad adicional.
+- Los datos que usted ingrese o solicite, se veran y guardaran en JSON. Pero una vez guarde un dato sea por Insert o Update, este se encripta de forma automatica con un Hash HS256, permitiendo una capa de seguridad adicional.
 
-Utilizamos Helmet para disponer de un control de Cabeceras HTML, que nos prevee de ataques clasicos como son los CORS o XSS Filter entre otros
+- Utilizamos Helmet para disponer de un control de Cabeceras HTML, que nos prevee de ataques clasicos como son los CORS o XSS Filter entre otros
 
 ## Consejos
 - Indique un directorio para las colecciones lejos o poco accesible 
-- SolarDB pondra claves de encriptacion UUID Random, puede especificar claves criptograficas mas fuertes
+- SolarDB pondra claves de encriptacion UUID Random, puede especificar claves criptograficas personalizadas
 - Evalue utilizar un Proxy Reverso para ocultar o manejar la exposicion a la Internet
 
 # Uso
