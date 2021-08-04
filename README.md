@@ -45,7 +45,7 @@ fd881bbf-bece-4a1c-83d9-f488fa0de10f
 ```
 
 ### Creacion de Usuarios y Tokens
-De manera temporal y enfocado a que es una version en desarrollo, se planeo utilizar un comando para poder crear Usuarios, de manera aleatoria.
+Dispone de una utilidad que permite crear usuarios con permisos total mediante termial de manera practica. Para esto [USERCMD](https://github.com/gusgeek/SolarDB-Server#usercmd), debe estar habilitado.
 
 Obtendremos este ejecutando la siguiente linea:
 - `<Compilado> nuser`
