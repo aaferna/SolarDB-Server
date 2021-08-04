@@ -62,7 +62,7 @@ if(cmd._ == "tokens"){
             }   
         } else { server.run(fiStack) }
     } else {
-        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Hay un problema con los archivos de configuracion, porfavor verifique que se encuentren" })+",", false)
+        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Hay un problema con los archivos de configuracion, porfavor verifique que se encuentren" })+",", false)
         console.log("Hay un problema con los archivos de configuracion, porfavor verifique que se encuentren");
     }
 }
