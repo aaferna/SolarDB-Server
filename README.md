@@ -61,11 +61,13 @@ User {
 ```
 
 # Configuracion
+
 - Es necesario tener el archivo de configuacion .env, este junto con el ejecutable. Este es el que tendra la configuracion del servidor
 
 Puede configurar este de manera manual siguiendo la especificacion de abajo, o colocando `<ejecutor> setup` de manera automatica creara el archivo de configuracion por usted.
 
 Este es el archivo de configuracion en el que estableceremos los Tokens, Directorio de Datos y Log junto al Puerto de escucha. 
+
 
 ```js
 PORT="1802"
