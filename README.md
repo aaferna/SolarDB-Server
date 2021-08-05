@@ -71,14 +71,14 @@ Este es el archivo de configuracion en el que estableceremos los Tokens, Directo
 
 ```js
       PORT="1802"
-      CONTAINER="E:\Escritorio\SolarDB\data\"
-      LOG="E:\Escritorio\SolarDB\log\"
+      CONTAINER="E:\\Escritorio\\SolarDB\\data\\"
+      LOG="E:\\Escritorio\\SolarDB\\log\\"
       HTOKEN="e102175c-b310-4055-86a2-896e9c3f7a56"
       HINDEX="ba639372-89f0-48a5-8962-5ebd8dc0ae72"
       USERCMD=TRUE
 ```
 
-## USERCMD
+### USERCMD
 Este parametro nos permite declarar si autorizamos crear usuarios por Terminal o no. De manera automatica se creara en TRUE, pero si no volvera a utilizarlo cambie a FALSE para mas seguridad.
 
 # Seguridad
