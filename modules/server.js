@@ -95,7 +95,7 @@ const run = (fiStack) =>{
         exsrv.use(helmet())
         const jsonErrorHandler = async (err, req, res, next) => {
             c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Los datos enviados no son JSON", data: { error: err, headers: req.headers } })+",", false)
-            res.send({ status: 100, type: "error", msg : "Los datos enviados no son JSON" });
+            res.send({ status: 100, msg : "Los datos enviados no son JSON" });
         }
         exsrv.use(jsonErrorHandler)
     // Activity
@@ -159,11 +159,11 @@ const run = (fiStack) =>{
                     }
                 } catch(err) {
                     c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /insert", err: err })+",", false)
-                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /insert", token: req.headers.authorization })+",", false)
-                res.send({ status: 201, msg: "Token o JSON erroneo"}) 
+                res.send({ status: 199, msg: "Token o JSON erroneo"}) 
 
             }
         })
@@ -212,7 +212,7 @@ const run = (fiStack) =>{
                     }
                 } catch(err) {
                     c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /update", err: err })+",", false)
-                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /update", token: req.headers.authorization })+",", false)
@@ -280,7 +280,7 @@ const run = (fiStack) =>{
                     }
                 } catch(err) {
                     c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select", err: err })+",", false)
-                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
@@ -369,7 +369,7 @@ const run = (fiStack) =>{
                     }
                 } catch(err) {
                     c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/search/specific", err: err })+",", false)
-                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/search/specific", token: req.headers.authorization })+",", false)
@@ -501,7 +501,7 @@ const run = (fiStack) =>{
                     }
                 } catch(err) {
                     c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/query", err: err })+",", false)
-                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query", token: req.headers.authorization })+",", false)
@@ -542,7 +542,7 @@ const run = (fiStack) =>{
                     }
                 } catch(err) {
                     c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /delete", err: err })+",", false)
-                    res.send(res.send({ status: 200, msg: "Existe un error interno", err: err}))
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /delete", token: req.headers.authorization })+",", false)

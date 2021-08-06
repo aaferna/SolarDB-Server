@@ -89,18 +89,40 @@ En este caso si se envia cualquier cosa que no sea un JSON
 ```json
 {
     "status": 100,
-    "type": "error",
     "msg": "Los datos enviados no son JSON"
 }
 ```
 
-En este caso, si se envia un JSON no valido para la funcion indicada
+En los casos de errores recibira un JSON como el siguiente:
+
 ```json
 {
     "status": 201,
     "msg": "Token es erroneo o el JSON enviado no es correcto"
 }
 ```
+| ERROR CODE  | Desripcion  |
+| ----------- | ----------- |
+| 70          | Title       |
+| 75          | Title       |
+| 80          | Title       |
+| 85          | Title       |
+| 90          | Title       |
+| 100         | Title       |
+| 199         | Title       |
+| 201         | Title       |
+| 202         | Title       |
+| 203         | Title       |
+| 204         | Title       |
+
+| ERROR CODE  | Desripcion  |
+| ----------- | ----------- |
+| 140         | Title       |
+| 150         | Title       |
+| 160         | Title       |
+| 170         | Title       |
+| 180         | Title       |
+| 190         | Title       |
 
 
 # Seguridad
