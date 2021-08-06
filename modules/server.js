@@ -5,6 +5,7 @@ const jwt = require('jwt-simple');
 const generator = require('generate-password');
 const { validate: uuidValidate } = require('uuid');
 const c = require("loggering")
+const Validator = require('jsonschema').Validator;
 require('dotenv').config();
 
 const nuser = (fiStack) =>{
@@ -91,18 +92,19 @@ const run = (fiStack) =>{
         const port = fiStack.port
         const exsrv = express()
         exsrv.use(express.json())
-        exsrv.use(express.urlencoded({ extended: true }))
         exsrv.use(helmet())
-
+        const jsonErrorHandler = async (err, req, res, next) => {
+            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Los datos enviados no son JSON", data: { error: err, headers: req.headers } })+",", false)
+            res.send({ status: 100, type: "error", msg : "Los datos enviados no son JSON" });
+        }
+        exsrv.use(jsonErrorHandler)
     // Activity
 
         exsrv.get('/', (req, res) => {
 
             if (!req.headers.authorization) {
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token no valido en /", token: req.headers.authorization })+",", false)
-                return res
-                .status(403)
-                .send({ message: "Tu petición no tiene cabecera de autorización" });
+                res.send({ message: "Tu petición no tiene cabecera de autorización" });
             } else {
                 res.json({ service: 'Ok', user: tokenDecode(req.headers.authorization) })
             }
@@ -110,12 +112,21 @@ const run = (fiStack) =>{
         })
 
         exsrv.post('/insert', (req, res) => {
-            if(req.headers.authorization){
+            
+            const v = new Validator();
+            const validJson = v.validate(req.body, {
+                    "type": "object",
+                    "collection": {"type": "string"},
+                    "data": {"type": "object"},
+                    "required": ["collection", "data"]
+            }).valid
+            
+            if(req.headers.authorization && validJson == true){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
                         if(userVerify.permits.create === true){
-                            if(req.body.collection != undefined && req.body.collection != "" && req.body.data != undefined){
+                            if(req.body.collection != undefined && req.body.collection != "" && req.body.data != undefined && req.body.data != "" ){
                                 try{
                                     const insert = solar.dbInsert(
                                         jwt.encode(req.body.data, fiStack.hashIndex),
@@ -152,7 +163,8 @@ const run = (fiStack) =>{
                 }
             } else { 
                 c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /insert", token: req.headers.authorization })+",", false)
-                res.send({ status: 201, msg: "Token es erroneo"}) 
+                res.send({ status: 201, msg: "Token o JSON erroneo"}) 
+
             }
         })
 

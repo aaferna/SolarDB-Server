@@ -81,6 +81,28 @@ Este es el archivo de configuracion en el que estableceremos los Tokens, Directo
 ### USERCMD
 Este parametro nos permite declarar si autorizamos crear usuarios por Terminal o no. De manera automatica se creara en TRUE, pero si no volvera a utilizarlo cambie a FALSE para mas seguridad.
 
+# Manejador de Errores
+
+En el caso de enviar un cuerpo que no corresponda a un JSON valido tendremos dos tipos de respuestas
+
+En este caso si se envia cualquier cosa que no sea un JSON
+```json
+{
+    "status": 100,
+    "type": "error",
+    "msg": "Los datos enviados no son JSON"
+}
+```
+
+En este caso, si se envia un JSON no valido para la funcion indicada
+```json
+{
+    "status": 201,
+    "msg": "Token es erroneo o el JSON enviado no es correcto"
+}
+```
+
+
 # Seguridad
 (En construccion)
 
@@ -88,7 +110,7 @@ Este parametro nos permite declarar si autorizamos crear usuarios por Terminal o
 
 - De manera propia, SolarDB debe tener configurado Tokens de encriptacion para los usuarios y para los datos. Este utilizara JSON WebToken para encriptar y desencriptar los datos.
 
-- Los datos que usted ingrese o solicite, se veran y guardaran en JSON. Pero una vez guarde un dato sea por Insert o Update, este se encripta de forma automatica con un Hash HS256, permitiendo una capa de seguridad adicional.
+- Los datos que usted ingrese o solicite, se veran y guardaran en JSON. Pero una vez guarde un dato sea por Insert o Update, este se encripta de forma automatica con JSON Web Token con Hash HS256, permitiendo una capa de seguridad adicional.
 
 - Utilizamos Helmet para disponer de un control de Cabeceras HTML, que nos prevee de ataques clasicos como son los CORS o XSS Filter entre otros
 
