@@ -86,6 +86,7 @@ Este parametro nos permite declarar si autorizamos crear usuarios por Terminal o
 En el caso de enviar un cuerpo que no corresponda a un JSON valido tendremos dos tipos de respuestas
 
 En este caso si se envia cualquier cosa que no sea un JSON
+
 ```json
 {
     "status": 100,
@@ -93,17 +94,17 @@ En este caso si se envia cualquier cosa que no sea un JSON
 }
 ```
 
-En los casos de errores recibira un JSON como el siguiente:
+ó
 
 ```json
 {
-    "status": 201,
-    "msg": "Token es erroneo o el JSON enviado no es correcto"
+    "status": 199,
+    "msg": "Token o JSON erroneo"
 }
 ```
 
-| ERROR CODE  | Desripcion  |
-| ----------- | ----------- |
+| ERROR CODE  | Descripcion                                    |
+| ----------- | ---------------------------------------------- |
 | 70          | No se encontro el index                        |
 | 75          | No se creo el Index                            |
 | 80          | No se actualizo el Index                       |
@@ -124,8 +125,7 @@ En los casos de errores recibira un JSON como el siguiente:
 | 203         | Fallo la consulta: consulta mal armada         |
 | 204         | No se creo el Index                            |
 
-
-
+Los mensajes de errores seran optimizados en versiones consiguientes
 
 # Seguridad
 (En construccion)
