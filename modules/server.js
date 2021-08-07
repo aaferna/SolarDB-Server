@@ -98,7 +98,7 @@ const run = (fiStack) =>{
             res.send({ status: 100, msg : "Los datos enviados no son JSON" });
         }
         exsrv.use(jsonErrorHandler)
-        
+
     // Activity
 
         exsrv.get('/', (req, res) => {
@@ -292,6 +292,7 @@ const run = (fiStack) =>{
                                     if(response != 0){
                                         res.send({
                                             status: 170,
+                                            msg: "Datos encontrados",
                                             data: response
                                         })
                                     } else { 
@@ -394,6 +395,7 @@ const run = (fiStack) =>{
                                     if(response != 0){
                                         res.send({
                                             status: 180,
+                                            msg: "Datos encontrados",
                                             tag: req.body.tag,
                                             data: response
                                         })
@@ -454,6 +456,7 @@ const run = (fiStack) =>{
                                         if(data != 0){
                                             res.send({
                                                 status: 190,
+                                                msg: "Datos encontrados",
                                                 total: cant,
                                                 data: data
                                             })

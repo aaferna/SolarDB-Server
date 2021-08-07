@@ -101,28 +101,30 @@ En los casos de errores recibira un JSON como el siguiente:
     "msg": "Token es erroneo o el JSON enviado no es correcto"
 }
 ```
-| ERROR CODE  | Desripcion  |
-| ----------- | ----------- |
-| 70          | Title       |
-| 75          | Title       |
-| 80          | Title       |
-| 85          | Title       |
-| 90          | Title       |
-| 100         | Title       |
-| 199         | Title       |
-| 201         | Title       |
-| 202         | Title       |
-| 203         | Title       |
-| 204         | Title       |
 
 | ERROR CODE  | Desripcion  |
 | ----------- | ----------- |
-| 140         | Title       |
-| 150         | Title       |
-| 160         | Title       |
-| 170         | Title       |
-| 180         | Title       |
-| 190         | Title       |
+| 70          | No se encontro el index                        |
+| 75          | No se creo el Index                            |
+| 80          | No se actualizo el Index                       |
+| 85          | No se encontro el index                        |
+| 90          | No se encontraron datos                        |
+| 95          | No se encontraron datos                        |
+| 100         | Los datos enviados no son JSON                 |
+| 140         | Index Eliminado                                |
+| 150         | Index Creado                                   |
+| 160         | Los datos fueron guardados                     |
+| 170         | Datos encontrados                              |
+| 180         | Datos encontrados                              |
+| 190         | Datos encontrados                              |
+| 199         | Token o JSON erroneo                           |
+| 200         | Existe un error interno                        |
+| 201         | Token es erroneo                               |
+| 202         | El usuario no tiene permisos de escritura      |
+| 203         | Fallo la consulta: consulta mal armada         |
+| 204         | No se creo el Index                            |
+
+
 
 
 # Seguridad
