@@ -5,8 +5,8 @@ const jwt = require('jwt-simple');
 const generator = require('generate-password');
 const { validate: uuidValidate } = require('uuid');
 const c = require("loggering")
-const Validator = require('jsonschema').Validator;
 require('dotenv').config();
+const Ajv = require("ajv")
 
 const nuser = (fiStack) =>{
 
@@ -98,6 +98,7 @@ const run = (fiStack) =>{
             res.send({ status: 100, msg : "Los datos enviados no son JSON" });
         }
         exsrv.use(jsonErrorHandler)
+        
     // Activity
 
         exsrv.get('/', (req, res) => {
@@ -112,16 +113,21 @@ const run = (fiStack) =>{
         })
 
         exsrv.post('/insert', (req, res) => {
+
+            const ajv = new Ajv()
+            const schema = {
+                type: "object",
+                properties: {
+                    collection: { type: "string" },
+                    data: { type: "object" }
+                },
+                required: ["collection", "data"],
+                additionalProperties: false,
+            }
+
+            const validate = ajv.compile(schema)
             
-            const v = new Validator();
-            const validJson = v.validate(req.body, {
-                    "type": "object",
-                    "collection": {"type": "string"},
-                    "data": {"type": "object"},
-                    "required": ["collection", "data"]
-            }).valid
-            
-            if(req.headers.authorization && validJson == true){
+            if(req.headers.authorization && validate(req.body) == true){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
@@ -168,8 +174,23 @@ const run = (fiStack) =>{
             }
         })
 
-        exsrv.put('/update', (req, res) => {
-            if(req.headers.authorization){
+        exsrv.put('/updates', (req, res) => {
+
+            const ajv = new Ajv()
+            const schema = {
+                type: "object",
+                properties: {
+                    collection: { type: "string" },
+                    id: { type: "string" },
+                    data: { type: "object" }
+                },
+                required: ["collection", "id", "data"],
+                additionalProperties: false,
+            }
+
+            const validate = ajv.compile(schema)
+            
+            if(req.headers.authorization && validate(req.body) == true){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
@@ -221,7 +242,22 @@ const run = (fiStack) =>{
         })
 
         exsrv.get('/select', (req, res) => {
-            if(req.headers.authorization){
+
+            const ajv = new Ajv()
+            const schema = {
+                type: "object",
+                properties: {
+                    collection: { type: "string" },
+                    id: { type: "string" },
+                    type: { type: "string" }
+                },
+                required: ["collection", "id", "type"],
+                additionalProperties: false,
+            }
+
+            const validate = ajv.compile(schema)
+            
+            if(req.headers.authorization && validate(req.body) == true){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
@@ -289,7 +325,21 @@ const run = (fiStack) =>{
         })
 
         exsrv.get('/select/search/specific', (req, res) => {
-            if(req.headers.authorization){
+            const ajv = new Ajv()
+            const schema = {
+                type: "object",
+                properties: {
+                    collection: { type: "string" },
+                    tag: { type: "string" },
+                    type: { type: "string" }
+                },
+                required: ["collection", "tag", "type"],
+                additionalProperties: false,
+            }
+
+            const validate = ajv.compile(schema)
+            
+            if(req.headers.authorization && validate(req.body) == true){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
@@ -377,8 +427,22 @@ const run = (fiStack) =>{
             }
         })
 
-        exsrv.get('/select/query', (req, res) => {
-            if(req.headers.authorization){
+        exsrv.get('/select/query/keys', (req, res) => {
+            const ajv = new Ajv()
+            const schema = {
+                type: "object",
+                properties: {
+                    collection: { type: "string" },
+                    keys: { type: "array" },
+                    type: { type: "string" }
+                },
+                required: ["collection", "keys", "type"],
+                additionalProperties: false,
+            }
+
+            const validate = ajv.compile(schema)
+            
+            if(req.headers.authorization && validate(req.body) == true){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
@@ -397,14 +461,13 @@ const run = (fiStack) =>{
                                     }
                                     if (req.body.type === "latest"){
                                         let datainStore = solar.dbGetIndex(req.body.collection, fiStack.container)
-                                        if(req.body.query.keys){
                                             let map1 = 0
                                             let preresponse = []
                                             datainStore.map( id => {
                                                 let prepreresponse = []
                                                 let map2 = 0
                                                 let data = indexDecode(solar.dbGetData(id, req.body.collection, fiStack.container).pop())
-                                                    req.body.query.keys.map(key => {
+                                                    req.body.keys.map(key => {
                                                         if(data[key]){
                                                             prepreresponse[map2] = data[key]
                                                             map2++
@@ -415,70 +478,6 @@ const run = (fiStack) =>{
                                                     
                                             })
                                             returns (preresponse, map1)
-                                        }
-                                        if(req.body.query.where){
-                                            let map1 = 0
-                                            let prepreresponse = []
-                                            datainStore.map( id => {
-                                                let data = indexDecode(solar.dbGetData(id, req.body.collection, fiStack.container).pop())
-                                                let data2 = data[req.body.query.where[0]]
-                                                let arg = req.body.query.where[1]
-                                                let ref = req.body.query.where[2]
-                                                switch (arg) {
-                                                    case "==":
-                                                        if(data2 == ref){
-                                                            let dataOk = data[req.body.query.where[0]]
-                                                            prepreresponse[map1] = {index: id, data: dataOk }
-                                                            map1++
-                                                        }
-                                                    case "===":
-                                                        if(data2 === ref){
-                                                            let dataOk = data[req.body.query.where[0]]
-                                                            prepreresponse[map1] = {index: id, data: dataOk }
-                                                            map1++
-                                                        }
-                                                        break;
-                                                        case ">=":
-                                                            if(data2 >= ref){
-                                                                let dataOk = data[req.body.query.where[0]]
-                                                                prepreresponse[map1] = {index: id, data: dataOk }
-                                                                map1++
-                                                            }
-                                                            break;      
-                                                        case ">":
-                                                            if(data2 > ref){
-                                                                let dataOk = data[req.body.query.where[0]]
-                                                                prepreresponse[map1] = {index: id, data: dataOk }
-                                                                map1++
-                                                            }
-                                                            break;
-                                                        case "<=":
-                                                            if(data2 <= ref){
-                                                                let dataOk = data[req.body.query.where[0]]
-                                                                prepreresponse[map1] = {index: id, data: dataOk }
-                                                                map1++
-                                                            }
-                                                            break;      
-                                                        case "<":
-                                                            if(data2 < ref){
-                                                                let dataOk = data[req.body.query.where[0]]
-                                                                prepreresponse[map1] = {index: id, data: dataOk }
-                                                                map1++
-                                                            }
-                                                            break;         
-                                                        case "!=":
-                                                            if(data2 != ref){
-                                                                let dataOk = data[req.body.query.where[0]]
-                                                                prepreresponse[map1] = {index: id, data: dataOk }
-                                                                map1++
-                                                            }
-                                                            break;                                                   
-                                                    default:
-                                                        break;
-                                                }
-                                            })
-                                            returns (prepreresponse, map1)
-                                        }
                                     } else { 
                                         c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/query"})+",", false)
                                         res.send({ status: 95, msg: "No se encontraron datos"}) 
@@ -509,15 +508,140 @@ const run = (fiStack) =>{
             }
         })
 
-        exsrv.delete('/delete', (req, res) => {
+        exsrv.get('/select/query/where', (req, res) => {
+            const ajv = new Ajv()
+            const schema = {
+                type: "object",
+                properties: {
+                    collection: { type: "string" },
+                    where: { type: "array" },
+                    type: { type: "string" }
+                },
+                required: ["collection", "where", "type"],
+                additionalProperties: false,
+            }
+
+            const validate = ajv.compile(schema)
+            
+            if(req.headers.authorization && validate(req.body) == true){
+                try {
+                    const userVerify = tokenDecode(req.headers.authorization)
+                    if(userVerify != 0){
+                        if(userVerify.permits.read === true){
+                            if(req.body.collection != undefined && req.body.collection != "" && 
+                                req.body.type != undefined && req.body.type != ""){
+                                try{
+                                    const returns = (data, cant) =>{
+                                        if(data != 0){
+                                            res.send({
+                                                status: 190,
+                                                total: cant,
+                                                data: data
+                                            })
+                                        } else { res.send({ status: 95, msg: "No se encontraron datos"}) }
+                                    }
+                                    if (req.body.type === "latest"){
+                                        let datainStore = solar.dbGetIndex(req.body.collection, fiStack.container)
+                                            let map1 = 0
+                                            let prepreresponse = []
+                                            datainStore.map( id => {
+                                                let data = indexDecode(solar.dbGetData(id, req.body.collection, fiStack.container).pop())
+                                                let data2 = data[req.body.where[0]]
+                                                let arg = req.body.where[1]
+                                                let ref = req.body.where[2]
+                                                switch (arg) {
+                                                    case "==":
+                                                        if(data2 == ref){
+                                                            let dataOk = data[req.body.where[0]]
+                                                            prepreresponse[map1] = {index: id, data: dataOk }
+                                                            map1++
+                                                        }
+                                                    case "===":
+                                                        if(data2 === ref){
+                                                            let dataOk = data[req.body.where[0]]
+                                                            prepreresponse[map1] = {index: id, data: dataOk }
+                                                            map1++
+                                                        }
+                                                        break;
+                                                        case ">=":
+                                                            if(data2 >= ref){
+                                                                let dataOk = data[req.body.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;      
+                                                        case ">":
+                                                            if(data2 > ref){
+                                                                let dataOk = data[req.body.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;
+                                                        case "<=":
+                                                            if(data2 <= ref){
+                                                                let dataOk = data[req.body.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;      
+                                                        case "<":
+                                                            if(data2 < ref){
+                                                                let dataOk = data[req.body.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;         
+                                                        case "!=":
+                                                            if(data2 != ref){
+                                                                let dataOk = data[req.body.where[0]]
+                                                                prepreresponse[map1] = {index: id, data: dataOk }
+                                                                map1++
+                                                            }
+                                                            break;                                                   
+                                                    default:
+                                                        break;
+                                                }
+                                            })
+                                            returns (prepreresponse, map1)
+                                    } else { 
+                                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/query"})+",", false)
+                                        res.send({ status: 95, msg: "No se encontraron datos"}) 
+                                    }
+                                }catch(err){
+                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/query", err: err })+",", false)
+                                    res.send({ status: 204, msg: "No se encontraron datos"})
+                                }
+                            } else { 
+                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select/query" })+",", false)
+                                res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
+                            }
+                        } else { 
+                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select/query" })+",", false)
+                            res.send({ status: 202, msg: "El usuario no tiene permisos de escritura"}) 
+                        }
+                    } else { 
+                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query", token: req.headers.authorization })+",", false)
+                        res.send({ status: 201, msg: "Token es erroneo"}) 
+                    }
+                } catch(err) {
+                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/query", err: err })+",", false)
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
+                }
+            } else { 
+                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query", token: req.headers.authorization })+",", false)
+                res.send({ status: 201, msg: "Token es erroneo"}) 
+            }
+        })
+
+        exsrv.delete('/delete/:collection/:id', (req, res) => {
             if(req.headers.authorization){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
                         if(userVerify.permits.delete === true){
-                            if(req.body.collection != undefined && req.body.collection != "" && req.body.id != undefined && req.body.id != ""){
+                            if(req.params.collection != undefined && req.params.id != undefined){
                                 try{
-                                    const datainStore = solar.dbDeleteData(req.body.id, req.body.collection, fiStack.container)
+                                    const datainStore = solar.dbDeleteData(req.params.id, req.params.collection, fiStack.container)
                                     if(datainStore === 1){
                                         res.send({
                                             status: 140,
