@@ -71,15 +71,61 @@ Este es el archivo de configuracion en el que estableceremos los Tokens, Directo
 
 ```js
       PORT="1802"
-      CONTAINER="E:\Escritorio\SolarDB\data\"
-      LOG="E:\Escritorio\SolarDB\log\"
+      CONTAINER="E:\\Escritorio\\SolarDB\\data\\"
+      LOG="E:\\Escritorio\\SolarDB\\log\\"
       HTOKEN="e102175c-b310-4055-86a2-896e9c3f7a56"
       HINDEX="ba639372-89f0-48a5-8962-5ebd8dc0ae72"
       USERCMD=TRUE
 ```
 
-## USERCMD
+### USERCMD
 Este parametro nos permite declarar si autorizamos crear usuarios por Terminal o no. De manera automatica se creara en TRUE, pero si no volvera a utilizarlo cambie a FALSE para mas seguridad.
+
+# Manejador de Errores
+
+En el caso de enviar un cuerpo que no corresponda a un JSON valido tendremos dos tipos de respuestas
+
+En este caso si se envia cualquier cosa que no sea un JSON
+
+```json
+{
+    "status": 100,
+    "msg": "Los datos enviados no son JSON"
+}
+```
+
+ó
+
+```json
+{
+    "status": 199,
+    "msg": "Token o JSON erroneo"
+}
+```
+
+| ERROR CODE  | Descripcion                                    |
+| ----------- | ---------------------------------------------- |
+| 70          | No se encontro el index                        |
+| 75          | No se creo el Index                            |
+| 80          | No se actualizo el Index                       |
+| 85          | No se encontro el index                        |
+| 90          | No se encontraron datos                        |
+| 95          | No se encontraron datos                        |
+| 100         | Los datos enviados no son JSON                 |
+| 140         | Index Eliminado                                |
+| 150         | Index Creado                                   |
+| 160         | Los datos fueron guardados                     |
+| 170         | Datos encontrados                              |
+| 180         | Datos encontrados                              |
+| 190         | Datos encontrados                              |
+| 199         | Token o JSON erroneo                           |
+| 200         | Existe un error interno                        |
+| 201         | Token es erroneo                               |
+| 202         | El usuario no tiene permisos de escritura      |
+| 203         | Fallo la consulta: consulta mal armada         |
+| 204         | No se creo el Index                            |
+
+Los mensajes de errores seran optimizados en versiones consiguientes
 
 # Seguridad
 (En construccion)
@@ -88,7 +134,7 @@ Este parametro nos permite declarar si autorizamos crear usuarios por Terminal o
 
 - De manera propia, SolarDB debe tener configurado Tokens de encriptacion para los usuarios y para los datos. Este utilizara JSON WebToken para encriptar y desencriptar los datos.
 
-- Los datos que usted ingrese o solicite, se veran y guardaran en JSON. Pero una vez guarde un dato sea por Insert o Update, este se encripta de forma automatica con un Hash HS256, permitiendo una capa de seguridad adicional.
+- Los datos que usted ingrese o solicite, se veran y guardaran en JSON. Pero una vez guarde un dato sea por Insert o Update, este se encripta de forma automatica con JSON Web Token con Hash HS256, permitiendo una capa de seguridad adicional.
 
 - Utilizamos Helmet para disponer de un control de Cabeceras HTML, que nos prevee de ataques clasicos como son los CORS o XSS Filter entre otros
 

@@ -5,7 +5,8 @@ const cmd = require('minimist')(process.argv.slice(2))
 const c = require("loggering")
 require('dotenv').config();
 
-const deployPath = path.dirname(process.execPath);
+    // const deployPath = path.dirname(__filename);
+    const deployPath = path.dirname(process.execPath);
 
 if(cmd._ == "tokens"){
     const { v4: uuidv4 } = require('uuid');
