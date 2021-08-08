@@ -679,9 +679,16 @@ const run = (fiStack) =>{
            
     // Server Init
 
-        exsrv.listen(port, () => {
-            console.log(`Escuchando http://localhost:${port}`)
-        })
+    exsrv.listen(port, () => {
+        console.log('El servidor fue inicializado')
+    }).on('error', function (err) {
+        if(err.errno === -4091) {
+            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err, msg : `El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1}`})+",", false)
+            console.log(`----- El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1} -----`);
+        } else {
+            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err})+",", false)
+        }
+    });
 
 }
 
