@@ -103,27 +103,17 @@ En este caso si se envia cualquier cosa que no sea un JSON
 }
 ```
 
-| ERROR CODE  | Descripcion                                    |
-| ----------- | ---------------------------------------------- |
-| 70          | No se encontro el index                        |
-| 75          | No se creo el Index                            |
-| 80          | No se actualizo el Index                       |
-| 85          | No se encontro el index                        |
-| 90          | No se encontraron datos                        |
-| 95          | No se encontraron datos                        |
-| 100         | Los datos enviados no son JSON                 |
-| 140         | Index Eliminado                                |
-| 150         | Index Creado                                   |
-| 160         | Los datos fueron guardados                     |
-| 170         | Datos encontrados                              |
-| 180         | Datos encontrados                              |
-| 190         | Datos encontrados                              |
-| 199         | Token o JSON erroneo                           |
-| 200         | Existe un error interno                        |
-| 201         | Token es erroneo                               |
-| 202         | El usuario no tiene permisos de escritura      |
-| 203         | Fallo la consulta: consulta mal armada         |
-| 204         | No se creo el Index                            |
+| ERROR CODE  | Descripcion                                        |
+| ----------- | -------------------------------------------------- |
+| 100         | Los datos enviados no son JSON                     |
+| 101         | Index Eliminado                                    |
+| 199         | Token es erroneo o el JSON enviado no es correcto  |
+| 200         | Existe un error interno                            |
+| 201         | Token es erroneo                                   |
+| 202         | El usuario no tiene permisos de escritura          |
+| 203         | Fallo la consulta: consulta mal armada             |
+| 204         | No se encontraron Datos                            |
+| 205         | Response OK                                        |
 
 Los mensajes de errores seran optimizados en versiones consiguientes
 
