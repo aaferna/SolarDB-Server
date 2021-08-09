@@ -15,7 +15,7 @@
     Este proyecto se encuentra en fase experimental, puede sufrir cambios
   </strong>
   <br><br>
-  <a href="https://github.com/gusgeek/SolarDB-Server/wiki">Ver Wiki - Documentacion de Uso</a>
+  <a href="https://github.com/gusgeek/SolarDB-Server/wiki">Ver Wiki - documentación de Uso</a>
   <br><br>
 </p>
 
