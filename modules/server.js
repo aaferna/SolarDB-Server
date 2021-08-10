@@ -28,6 +28,7 @@ const nuser = (fiStack) =>{
         password: password,
         token: tokn.split('.')[0]+"."+tokn.split('.')[1],
         key: tokn.split('.')[2],
+        admin: true,
         permits: {
             "create": true,
             "read": true,
@@ -99,7 +100,16 @@ const run = (fiStack, deployPath) =>{
             c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Los datos enviados no son JSON", data: { error: err, headers: req.headers } })+",", false)
             res.send({ status: 100, msg : "Los datos enviados no son JSON" });
         }
+        const userVerify =  (collection) => {
+
+            if(collection == "Users"){
+                return 0
+            } else {
+                return 1
+            }
+        }
         exsrv.use(jsonErrorHandler)
+        // exsrv.use(userVerify)
 
         // Activity
 
@@ -134,7 +144,7 @@ const run = (fiStack, deployPath) =>{
 
             const validate = ajv.compile(schema)
             
-            if(req.headers.authorization && validate(req.body) == true){
+            if(req.headers.authorization && validate(req.body) == true && userVerify(req.body.collection) != 0 ){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
@@ -194,7 +204,7 @@ const run = (fiStack, deployPath) =>{
 
             const validate = ajv.compile(schema)
             
-            if(req.headers.authorization && validate(req.body) == true){
+            if(req.headers.authorization && validate(req.body) == true  && userVerify(req.body.collection) != 0 ){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
@@ -669,7 +679,8 @@ const run = (fiStack, deployPath) =>{
                 res.send({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })     
-           
+    
+        
     // Server Init
 
     exsrv.listen(port, () => {
