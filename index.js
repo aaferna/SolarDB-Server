@@ -5,8 +5,8 @@ const path = require('path');
 const cmd = require('minimist')(process.argv.slice(2))
 const c = require("loggering")
 
-    // const deployPath = path.dirname(__filename);
-    const deployPath = path.dirname(process.execPath);
+    const deployPath = path.dirname(__filename);
+    // const deployPath = path.dirname(process.execPath);
 
 if(cmd._ == "tokens"){
 
@@ -59,7 +59,10 @@ if(cmd._ == "tokens"){
             "port": process.env.PORT,
             "container": process.env.CONTAINER,
             "hashToken": process.env.HTOKEN,
-            "hashIndex": process.env.HINDEX
+            "hashIndex": process.env.HINDEX,
+            "presre": deployPath,
+            "SSLMAIL": process.env.SSLMAIL,
+            "SSLDOMAIN": process.env.SSLDOMAIN
         }
 
         if(cmd._ == "nuser"){
@@ -70,7 +73,7 @@ if(cmd._ == "tokens"){
                 console.log("No es posible crear usuarios") 
             }   
             
-        } else { server.run(fiStack) }
+        } else { server.run(fiStack, deployPath) }
 
     } else { console.log("Hay un problema con los archivos de configuracion, porfavor verifique que se encuentren"); }
 

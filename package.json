@@ -5,7 +5,10 @@
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js",
+    "setup": "node index.js setup",
+    "nuser": "node index.js nuser",
+    "start": "node index.js run"
   },
   "repository": {
     "type": "git",
@@ -24,7 +27,7 @@
     "generate-password": "1.6.1",
     "helmet": "4.6.0",
     "jwt-simple": "0.5.6",
-    "loggering": "1.2.1",
+    "loggering": "1.2.2",
     "minimist": "1.2.5",
     "solardb-core": "2.2.0",
     "uuid": "8.3.2"
