@@ -640,7 +640,7 @@ const run = (fiStack, deployPath) =>{
         })
 
         exsrv.delete('/delete/:collection/:id', (req, res) => {
-            if(req.headers.authorization){
+            if(req.headers.authorization  && userVerify(req.body.collection) != 0){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
