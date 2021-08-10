@@ -1,3 +1,4 @@
+require('dotenv').config();
 const solar = require("solardb-core")
 const express = require("express")
 const helmet = require("helmet");
@@ -5,7 +6,6 @@ const jwt = require('jwt-simple');
 const generator = require('generate-password');
 const { validate: uuidValidate } = require('uuid');
 const c = require("loggering")
-require('dotenv').config();
 const Ajv = require("ajv")
 
 const nuser = (fiStack) =>{
@@ -89,6 +89,20 @@ const run = (fiStack, deployPath) =>{
         }
     }
 
+    const jsonErrorHandler = async (err, req, res, next) => {
+        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Los datos enviados no son JSON", data: { error: err, headers: req.headers } })+",", false)
+        res.send({ status: 100, msg : "Los datos enviados no son JSON" });
+    }
+
+    const userVerify =  (collection) => {
+
+        if(collection == "Users"){
+            return 0
+        } else {
+            return 1
+        }
+    }
+
     // Express Server Init
 
         const port = fiStack.port
@@ -96,20 +110,7 @@ const run = (fiStack, deployPath) =>{
         
         exsrv.use(express.json())
         exsrv.use(helmet())
-        const jsonErrorHandler = async (err, req, res, next) => {
-            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Los datos enviados no son JSON", data: { error: err, headers: req.headers } })+",", false)
-            res.send({ status: 100, msg : "Los datos enviados no son JSON" });
-        }
-        const userVerify =  (collection) => {
-
-            if(collection == "Users"){
-                return 0
-            } else {
-                return 1
-            }
-        }
         exsrv.use(jsonErrorHandler)
-        // exsrv.use(userVerify)
 
         // Activity
 
