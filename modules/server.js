@@ -799,7 +799,34 @@ const run = (fiStack, deployPath) =>{
                 res.send({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
+        exsrv.get('/server/manager/setup/:id', (req, res) => {
 
+     
+            if(req.params.id != undefined && req.params.id != ""){
+                try{
+                    let datainStore
+                    let response
+                        datainStore = solar.dbGetData(req.params.id, "_Manager_", fiStack.container).pop()
+                        response = indexDecode(datainStore)
+                    if(response != 0){
+                        res.send({
+                            status: 205,
+                            msg: "Response OK",
+                            data: response
+                        })
+                    } else { res.send({ status: 204, msg: "No se encontraron datos"}) }
+                }catch(err){
+                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
+                    res.send({ status: 204, msg: "No se encontraron Datos"})
+                }
+            } else { 
+                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
+                res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
+            }
+
+
+            
+        })
 
     // Server Init
 
