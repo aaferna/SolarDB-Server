@@ -95,7 +95,7 @@ const run = (fiStack, deployPath) =>{
 
     const userVerify =  (collection) => {
 
-        if(collection == "_Users_"){
+        if(collection == "_Users_" || collection == "_Manager_"){
             return 0
         } else {
             return 1
@@ -707,7 +707,8 @@ const run = (fiStack, deployPath) =>{
 
                                 try{
                                     let response = solar.dbGetIndex('',fiStack.container)
-                                    removeItemAll( response, "Users" )
+                                    response = removeItemAll( response, "_Users_" )
+                                    response = removeItemAll( response, "_Manager_" )
                                     if(response != 0){
                                         res.json({
                                             status: 205,
