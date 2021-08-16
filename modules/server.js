@@ -63,8 +63,7 @@ const run = (fiStack, deployPath) =>{
                     preresponse != 0) &&
                     preresponse.key == tokhead){
 
-                        if(uuidValidate(
-                        jwt.decode(preresponse.token+"."+tokhead, fiStack.hashToken))){
+                        if(uuidValidate(jwt.decode(preresponse.token+"."+tokhead, fiStack.hashToken))){
                             response = { id: id, admin:preresponse.admin, permits: preresponse.permits}
                         } 
 
@@ -770,7 +769,7 @@ const run = (fiStack, deployPath) =>{
                                         res.send({
                                             status: 205,
                                             msg: "Response OK",
-                                            id: insert.id
+                                            auth: insert.id
                                         })
                                     } else { res.send({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
@@ -799,14 +798,14 @@ const run = (fiStack, deployPath) =>{
                 res.send({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
-        exsrv.get('/server/manager/setup/:id', (req, res) => {
 
-     
-            if(req.params.id != undefined && req.params.id != ""){
+        exsrv.link('/server/manager/setup/:auth', (req, res) => {
+
+            if(req.params.auth != undefined && req.params.auth != ""){
                 try{
                     let datainStore
                     let response
-                        datainStore = solar.dbGetData(req.params.id, "_Manager_", fiStack.container).pop()
+                        datainStore = solar.dbGetData(req.params.auth, "_Manager_", fiStack.container).pop()
                         response = indexDecode(datainStore)
                     if(response != 0){
                         res.send({
@@ -824,22 +823,84 @@ const run = (fiStack, deployPath) =>{
                 res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
             }
 
+        })
 
+        exsrv.link('/server/manager/handle', (req, res) => {
+
+            const ajv = new Ajv()
+            const schema = {
+                type: "object",
+                properties: {
+                    uuid: { type: "string" },
+                    auth: { type: "string" },
+                    user: { type: "string" },
+                    pass: { type: "string" },
+                },
+                required: ["uuid", "auth", "user", "pass"],
+                additionalProperties: false,
+            }
+        
+            const validate = ajv.compile(schema)
             
+            if(validate(req.body) == true){
+                try {
+                    if(req.body.uuid != undefined && req.body.uuid != "" && 
+                        req.body.auth != undefined && req.body.auth != "" && 
+                        req.body.user != undefined && req.body.user != "" && 
+                        req.body.pass != undefined && req.body.pass != ""){
+                        try{
+                            let datainStore = solar.dbGetData(req.body.auth, "_Manager_", fiStack.container).pop()
+                            let uuid = indexDecode(datainStore).uuid
+                            if(uuid === req.body.uuid){
+                                let datainStore = solar.dbGetIndex("_Users_", fiStack.container)
+
+                                for (let i = 0; i < datainStore.length; i++) {
+
+                                    let datainStore2 = solar.dbGetData(datainStore[i], "_Users_", fiStack.container).pop()
+                                    let user = indexDecode(datainStore2)
+                                    if (user.username === req.body.user && user.password === req.body.pass){
+                                        res.send({
+                                            status: 205,
+                                            msg: "Response OK",
+                                            token: user.key
+                                        })
+                                        break;
+                                    } 
+
+                                }
+
+                            } else { res.send({ status: 204, msg: "No se encontraron datos"}) }
+                        }catch(err){
+                            console.log(err)
+                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /server/manager/handle", err: err })+",", false)
+                            res.send({ status: 204, msg: "No se encontraron Datos"})
+                        }
+                    } else { 
+                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /server/manager/handle" })+",", false)
+                        res.send({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
+                    }
+                } catch(err) {
+                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /server/manager/handle", err: err })+",", false)
+                    res.send({ status: 200, msg: "Existe un error interno", err: err})
+                }
+            } else { 
+                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/manager/handle", token: req.headers.authorization })+",", false)
+                res.send({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
+            }
         })
 
     // Server Init
 
-    exsrv.listen(port, () => {
-        console.log('El servidor fue inicializado')
-    }).on('error', function (err) {
-        if(err.errno === -4091) {
-            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err, msg : `El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1}`})+",", false)
-            console.log(`----- El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1} -----`);
-        } else {
-            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err})+",", false)
-        }
-    });
+        exsrv.listen(port, () => {
+            console.log('El servidor fue inicializado')
+        }).on('error', function (err) {
+            if(err.errno === -4091) {
+                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err, msg : `El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1}`})+",", false)
+                console.log(`----- El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1} -----`);
+            } else {
+                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err})+",", false)
+            }
+        });
 
 }
 
