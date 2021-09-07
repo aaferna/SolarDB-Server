@@ -63,7 +63,6 @@ if(cmd._ == "tokens"){
             "presre": deployPath,
             "HELMET": process.env.HELMET
         }
-        console.log(fiStack)
 
         if(cmd._ == "nuser"){
 
