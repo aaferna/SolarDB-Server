@@ -5,7 +5,6 @@ const helmet = require("helmet");
 const jwt = require('jwt-simple');
 const generator = require('generate-password');
 const { validate: uuidValidate } = require('uuid');
-const c = require("loggering")
 const Ajv = require("ajv")
 
 const nuser = (fiStack) =>{
@@ -47,7 +46,7 @@ const nuser = (fiStack) =>{
 
 }
 
-const run = (fiStack, deployPath) =>{
+const run = (fiStack) =>{
 
     const tokenDecode = (head) =>{
         try {
@@ -68,14 +67,14 @@ const run = (fiStack, deployPath) =>{
                         } 
 
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Token no valido", token: head })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Token no valido", token: head })+",", false)
                         response = 0
                     }
 
             })
             return response
         } catch(err) { 
-            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : err})+",", false)
+            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : err})+",", false)
             return 0 
         }
     }
@@ -89,7 +88,7 @@ const run = (fiStack, deployPath) =>{
     }
 
     const jsonErrorHandler = async (err, req, res, next) => {
-        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Los datos enviados no son JSON", data: { error: err, headers: req.headers } })+",", false)
+        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Los datos enviados no son JSON", data: { error: err, headers: req.headers } })+",", false)
         res.json({ status: 100, msg : "Los datos enviados no son JSON" });
     }
 
@@ -117,24 +116,17 @@ const run = (fiStack, deployPath) =>{
         const exsrv = express()
         
         exsrv.use(express.json())
-        exsrv.use(helmet())
+        if(fiStack.HELMET === 'TRUE'){
+            exsrv.use(helmet())
+        }
         exsrv.use(jsonErrorHandler)
-        exsrv.all('*', function(req, res, next) {
-            res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, LINK');
-            res.header(
-              'Access-Control-Allow-Headers',
-              'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-            );
-            next();
-          });
 
         // Activity
 
         exsrv.get('/', (req, res) => {
 
             if (!req.headers.authorization) {
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token no valido en /", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token no valido en /", token: req.headers.authorization })+",", false)
                 res.json({ message: "Tu petición no tiene cabecera de autorización" });
             } else {
                 const user = tokenDecode(req.headers.authorization)
@@ -181,27 +173,27 @@ const run = (fiStack, deployPath) =>{
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /insert", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /insert", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /insert" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /insert" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /insert" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /insert" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /insert", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /insert", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /insert", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /insert", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /insert", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /insert", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -243,32 +235,32 @@ const run = (fiStack, deployPath) =>{
                                                 id: r.id
                                             })
                                         } else { 
-                                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
+                                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
                                             res.json({ status: 204, msg: "No se encontraron Datos"})
                                         }
                                     }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -329,27 +321,27 @@ const run = (fiStack, deployPath) =>{
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -430,27 +422,27 @@ const run = (fiStack, deployPath) =>{
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/search/specific", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/search/specific", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select/search/specific" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select/search/specific" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select/search/specific" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select/search/specific" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/search/specific", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/search/specific", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/search/specific", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/search/specific", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/search/specific", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/search/specific", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -509,27 +501,27 @@ const run = (fiStack, deployPath) =>{
                                             returns (preresponse, map1)
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/query/keys", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/query/keys", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select/query/keys" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select/query/keys" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select/query/keys" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select/query/keys" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/keys", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/keys", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/query/keys", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/query/keys", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/keys", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/keys", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -632,27 +624,27 @@ const run = (fiStack, deployPath) =>{
                                             returns (prepreresponse, map1)
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/query/where", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select/query/where", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select/query/where" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select/query/where" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select/query/where" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /select/query/where" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/where", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/where", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/query/where", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /select/query/where", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/where", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /select/query/where", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -673,27 +665,27 @@ const run = (fiStack, deployPath) =>{
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /delete", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /delete", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /delete" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /delete" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /delete" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /delete" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /delete", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /delete", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /delete", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /delete", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /delete", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /delete", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })     
@@ -718,24 +710,24 @@ const run = (fiStack, deployPath) =>{
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
                                     console.log(err)
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /server/stores", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /server/stores", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
 
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /server/stores" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /server/stores" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /server/stores", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /server/stores", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -773,28 +765,28 @@ const run = (fiStack, deployPath) =>{
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /insert", err: err })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /insert", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             } else { 
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /insert" })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /insert" })+",", false)
                                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                             }
 
                         } else { 
-                            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /server/stores" })+",", false)
+                            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /server/stores" })+",", false)
                             res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
                         }
                     } else { 
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /server/stores", err: err })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /server/stores", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/stores", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -823,17 +815,17 @@ const run = (fiStack, deployPath) =>{
                         } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
 
                     }catch(err){
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
                         res.json({ status: 204, msg: "No se encontraron Datos"})
                     }
 
                 } else { 
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
                     res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                 }
 
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /select" })+",", false)
                 res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
             }
 
@@ -895,29 +887,29 @@ const run = (fiStack, deployPath) =>{
                                             }
                                         } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                     }catch(err){
-                                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /server/manager/handle", err: err })+",", false)
+                                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /server/manager/handle", err: err })+",", false)
                                         res.json({ status: 204, msg: "No se encontraron Datos"})
                                     }
                                 } else { 
-                                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /server/manager/handle" })+",", false)
+                                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /server/manager/handle" })+",", false)
                                     res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
                                 }
                             } catch(err) {
-                                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /server/manager/handle", err: err })+",", false)
+                                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /server/manager/handle", err: err })+",", false)
                                 res.json({ status: 200, msg: "Existe un error interno", err: err})
                             }
                         } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                     }catch(err){
-                        c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
+                        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /select", err: err })+",", false)
                         res.json({ status: 204, msg: "No se encontraron Datos"})
                     }
                 } else { 
-                    c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/manager/handle", token: req.headers.authorization })+",", false)
+                    // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/manager/handle", token: req.headers.authorization })+",", false)
                     res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
                 }
 
             } else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/manager/handle", token: req.headers.authorization })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Token es erroneo /server/manager/handle", token: req.headers.authorization })+",", false)
                 res.json({ status: 199, msg: "Token es erroneo o el JSON enviado no es correcto"}) 
             }
         })
@@ -928,10 +920,10 @@ const run = (fiStack, deployPath) =>{
             console.log('El servidor fue inicializado')
         }).on('error', function (err) {
             if(err.errno === -4091) {
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err, msg : `El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1}`})+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err, msg : `El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1}`})+",", false)
                 console.log(`----- El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1} -----`);
             } else {
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err})+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", err : err})+",", false)
             }
         });
 
