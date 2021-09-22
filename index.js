@@ -4,8 +4,12 @@ const fs = require("fs");
 const path = require('path');
 const cmd = require('minimist')(process.argv.slice(2))
 
-    const deployPath = path.dirname(__filename);
-    // const deployPath = path.dirname(process.execPath);
+let deployPath = path.dirname(process.execPath);
+
+    if(process.env.DEV === "TRUE"){
+        deployPath = path.dirname(__filename);
+    } 
+
 
 if(cmd._ == "tokens"){
 
@@ -19,15 +23,15 @@ if(cmd._ == "tokens"){
         if (!fs.existsSync(path.join(deployPath, "/.env"))) {
             const { v4: uuidv4 } = require('uuid');
             let configFile = 
-`
-    PORT="1802"
-    CONTAINER="${path.join(deployPath, "/data/")}"
-    LOG="${path.join(deployPath, "/log/")}"
-    HTOKEN="${uuidv4()}"
-    HINDEX="${uuidv4()}"
-    USERCMD=TRUE
-    HELMET=TRUE
-`
+                `
+                    PORT="1802"
+                    CONTAINER="${path.join(deployPath, "/data/")}"
+                    LOG="${path.join(deployPath, "/log/")}"
+                    HTOKEN="${uuidv4()}"
+                    HINDEX="${uuidv4()}"
+                    USERCMD=TRUE
+                    HELMET=TRUE
+                `
             if (!fs.existsSync(path.join(deployPath, "/.env"))) {
                 fs.writeFileSync(path.join(deployPath, "/.env"), configFile, 'utf8');
             } 

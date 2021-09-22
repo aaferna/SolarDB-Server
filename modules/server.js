@@ -937,13 +937,14 @@ const run = (fiStack) =>{
                                     let preresponse = []
 
                                     datainStore.map( id => {
+
                                         let data = indexDecode(solar.dbGetData(id, "_Users_", fiStack.container).pop())
 
                                         preresponse.push( {
                                             id: id,
                                             username: data.username,
-                                            admin: data.admin,
-                                            permits: data.permits
+                                            admin: data.admin ? true : false,
+                                            permits: typeof data.permits === 'object' ? data.permits : data.databases 
                                         })
                                     })
 
@@ -1017,6 +1018,7 @@ const run = (fiStack) =>{
                                         res.json({
                                             status: 205,
                                             msg: "Response OK",
+                                            key: data.key,
                                             id: insert.id
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
