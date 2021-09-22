@@ -49,7 +49,6 @@ const nuser = (fiStack) =>{
 const run = (fiStack) =>{
 
     const tokenDecode = (head) =>{
-        console.log(head)
         try {
             const indexes = solar.dbGetIndex("_Users_", fiStack.container)
             let response
@@ -69,7 +68,6 @@ const run = (fiStack) =>{
                                 admin: preresponse.admin ? true : false, 
                                 permits: preresponse.permits ? preresponse.permits : preresponse.databases 
                             }
-                            console.log(response)
                         } 
                     }
 
@@ -94,7 +92,7 @@ const run = (fiStack) =>{
         res.json({ status: 100, msg : "Los datos enviados no son JSON" });
     }
 
-    const userVerify =  (collection) => {
+    const userVerify = (collection) => {
 
         if(collection == "_Users_" || collection == "_Manager_"){
             return 0
@@ -110,6 +108,16 @@ const run = (fiStack) =>{
             } else { ++i;  }
         }
         return arr;
+    }
+
+    const searchPermits = (user, db, permits) => {
+
+        for (const datb in user) {
+            if(datb === db){
+                return user[datb][permits] ? true : false
+            }
+        }
+
     }
 
     // Express Server Init
@@ -169,7 +177,8 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.create === true){
+                        
+                        if(searchPermits(userVerify.permits, req.body.collection, "create") === true || userVerify.admin === true){
                             if(req.body.collection != undefined && req.body.collection != "" && req.body.data != undefined && req.body.data != "" ){
                                 try{
                                     const insert = solar.dbInsert(
@@ -228,8 +237,8 @@ const run = (fiStack) =>{
             if(req.headers.authorization && validate(req.body) == true  && userVerify(req.body.collection) != 0 ){
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
-                    if(userVerify != 0){
-                        if(userVerify.permits.update === true){
+                     if(userVerify != 0){
+                        if(searchPermits(userVerify.permits, req.body.collection, "update") === true || userVerify.admin === true){
                             if(req.body.collection != undefined && req.body.collection != "" && 
                                 req.body.data != undefined && req.body.data != "" && 
                                 req.body.id != undefined && req.body.id != ""){
@@ -296,7 +305,7 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.read === true){
+                        if(searchPermits(userVerify.permits, req.body.collection, "read") === true || userVerify.admin === true){
                             if(req.body.collection != undefined && req.body.collection != "" && 
                             req.body.type != undefined && req.body.type != "" && 
                             req.body.id != undefined && req.body.id != ""){
@@ -376,7 +385,7 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.create === true){
+                        if(searchPermits(userVerify.permits, req.body.collection, "read") === true || userVerify.admin === true){
                             if(req.body.collection != undefined && req.body.collection != "" && 
                             req.body.type != undefined && req.body.type != ""){
                                 try{
@@ -477,7 +486,7 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.read === true){
+                        if(searchPermits(userVerify.permits, req.body.collection, "read") === true || userVerify.admin === true){
                             if(req.body.collection != undefined && req.body.collection != "" && 
                                 req.body.type != undefined && req.body.type != ""){
                                 try{
@@ -556,7 +565,7 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.read === true){
+                        if(searchPermits(userVerify.permits, req.body.collection, "read") === true || userVerify.admin === true){
                             if(req.body.collection != undefined && req.body.collection != "" && 
                                 req.body.type != undefined && req.body.type != ""){
                                 try{
@@ -665,7 +674,7 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.delete === true){
+                        if(searchPermits(userVerify.permits, req.body.collection, "delete") === true || userVerify.admin === true){
                             if(req.params.collection != undefined && req.params.id != undefined){
                                 try{
                                     const datainStore = solar.dbDeleteData(req.params.id, req.params.collection, fiStack.container)
@@ -706,7 +715,7 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.read === true){
+                        if(userVerify.admin === true){
 
                                 try{
                                     let response = solar.dbGetIndex('',fiStack.container)
@@ -930,7 +939,7 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.read === true){
+                        if(userVerify.admin === true){
 
                                 try{
                                     let datainStore = solar.dbGetIndex("_Users_", fiStack.container)
@@ -983,7 +992,7 @@ const run = (fiStack) =>{
                 properties: {
                     username: { type: "string" },
                     password: { type: "string" },
-                    databases: { type: "array" }
+                    databases: { type: "object" }
                 },
                 required: ["username", "password", "databases"],
                 additionalProperties: false,
@@ -995,11 +1004,10 @@ const run = (fiStack) =>{
                 try {
                     const userVerify = tokenDecode(req.headers.authorization)
                     if(userVerify != 0){
-                        if(userVerify.permits.create === true){
+                        if(userVerify.admin === true){
                             // if(req.body.collection != undefined && req.body.collection != "" && req.body.data != undefined && req.body.data != "" ){
                                 try{
                                     let tokn = jwt.encode(uuidv4(), fiStack.hashToken)
-                                    console.log(tokn)
                                     
                                     let data = {
                                         token: tokn.split('.')[0]+"."+tokn.split('.')[1],
@@ -1007,13 +1015,13 @@ const run = (fiStack) =>{
                                         username: req.body.username,
                                         password: req.body.password,
                                         databases: req.body.databases
-
                                     }
-                                    console.log(data)
+
                                     const insert = solar.dbInsert(
                                         jwt.encode(data, fiStack.hashIndex),
                                         "_Users_",
                                         fiStack.container)
+
                                     if(insert.id){
                                         res.json({
                                             status: 205,
@@ -1022,6 +1030,7 @@ const run = (fiStack) =>{
                                             id: insert.id
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
+
                                 }catch(err){
                                     // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /insert", err: err })+",", false)
                                     console.log(err)
@@ -1040,6 +1049,7 @@ const run = (fiStack) =>{
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
+                    console.log(err)
                     // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /insert", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
