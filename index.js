@@ -3,10 +3,13 @@ const server = require("./modules/server");
 const fs = require("fs");
 const path = require('path');
 const cmd = require('minimist')(process.argv.slice(2))
-const c = require("loggering")
 
-    const deployPath = path.dirname(__filename);
-    // const deployPath = path.dirname(process.execPath);
+let deployPath = path.dirname(process.execPath);
+
+    if(process.env.DEV === "TRUE"){
+        deployPath = path.dirname(__filename);
+    } 
+
 
 if(cmd._ == "tokens"){
 
@@ -20,20 +23,21 @@ if(cmd._ == "tokens"){
         if (!fs.existsSync(path.join(deployPath, "/.env"))) {
             const { v4: uuidv4 } = require('uuid');
             let configFile = 
-            `
-            PORT="1802"
-            CONTAINER="${path.join(deployPath, "/data/")}"
-            LOG="${path.join(deployPath, "/log/")}"
-            HTOKEN="${uuidv4()}"
-            HINDEX="${uuidv4()}"
-            USERCMD=TRUE
-            `
+                `
+                    PORT="1802"
+                    CONTAINER="${path.join(deployPath, "/data/")}"
+                    LOG="${path.join(deployPath, "/log/")}"
+                    HTOKEN="${uuidv4()}"
+                    HINDEX="${uuidv4()}"
+                    USERCMD=TRUE
+                    HELMET=TRUE
+                `
             if (!fs.existsSync(path.join(deployPath, "/.env"))) {
                 fs.writeFileSync(path.join(deployPath, "/.env"), configFile, 'utf8');
             } 
             console.log("Archivo de Configuracion creado")
         } else { 
-            c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Se intento crear un perfil nuevo: Ya existe un perfil" })+",", false)
+            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Se intento crear un perfil nuevo: Ya existe un perfil" })+",", false)
             console.log("Ya existe un perfil") 
         }
     } catch (err) {
@@ -61,15 +65,14 @@ if(cmd._ == "tokens"){
             "hashToken": process.env.HTOKEN,
             "hashIndex": process.env.HINDEX,
             "presre": deployPath,
-            "SSLMAIL": process.env.SSLMAIL,
-            "SSLDOMAIN": process.env.SSLDOMAIN
+            "HELMET": process.env.HELMET
         }
 
         if(cmd._ == "nuser"){
 
             if(process.env.USERCMD === "TRUE"){ server.nuser(fiStack) } 
             else { 
-                c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Se intento crear un usuario nuevo por CMD y no esta habilitado" })+",", false)
+                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Se intento crear un usuario nuevo por CMD y no esta habilitado" })+",", false)
                 console.log("No es posible crear usuarios") 
             }   
             

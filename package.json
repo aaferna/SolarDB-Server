@@ -27,9 +27,8 @@
     "generate-password": "1.6.1",
     "helmet": "4.6.0",
     "jwt-simple": "0.5.6",
-    "loggering": "1.2.2",
     "minimist": "1.2.5",
-    "solardb-core": "2.2.0",
+    "solardb-core": "^3.1.1",
     "uuid": "8.3.2"
   }
 }

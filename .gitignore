@@ -82,3 +82,4 @@ solardb-server-linux
 solardb-server-macos
 solardb-server-win.exe
 data/
+.vscode/settings.json
