@@ -38,11 +38,7 @@ const nuser = (fiStack) =>{
 
     let r = solar.dbInsert(data, "_Users_", fiStack.container)
 
-    console.log("User", {
-        username: user,
-        password: password,
-        token: tokn.split('.')[2]
-    })
+  
 
 }
 
@@ -729,7 +725,6 @@ const run = (fiStack) =>{
                                         })
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    console.log(err)
                                     // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /server/stores", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
@@ -961,7 +956,6 @@ const run = (fiStack) =>{
                                         res.json(preresponse)
                                     } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
                                 }catch(err){
-                                    console.log(err)
                                     // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /server/stores", err: err })+",", false)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
@@ -1033,7 +1027,6 @@ const run = (fiStack) =>{
 
                                 }catch(err){
                                     // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /insert", err: err })+",", false)
-                                    console.log(err)
                                     res.json({ status: 204, msg: "No se encontraron Datos"})
                                 }
                             // } else { 
@@ -1049,7 +1042,6 @@ const run = (fiStack) =>{
                         res.json({ status: 201, msg: "Token es erroneo"}) 
                     }
                 } catch(err) {
-                    console.log(err)
                     // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Error Interno en /insert", err: err })+",", false)
                     res.json({ status: 200, msg: "Existe un error interno", err: err})
                 }
