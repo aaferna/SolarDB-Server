@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const nuser = (fiStack) =>{
 
-
+    solar.dbCreateCollection ("_Users_", fiStack.container)
     const user = generator.generate({
         length: 5,
         numbers: true
@@ -36,9 +36,13 @@ const nuser = (fiStack) =>{
         }
     }, fiStack.hashIndex);
 
-    let r = solar.dbInsert(data, "_Users_", fiStack.container)
-
-  
+    solar.dbInsert(data, "_Users_", fiStack.container)
+    
+    console.log("User", {
+        username: user,
+        password: password,
+        token: tokn.split('.')[2]
+    })
 
 }
 

@@ -6,9 +6,9 @@ const cmd = require('minimist')(process.argv.slice(2))
 
 let deployPath = path.dirname(process.execPath);
 
-    if(process.env.DEV === "TRUE"){
-        deployPath = path.dirname(__filename);
-    } 
+    // if(process.env.DEV === "TRUE"){
+    //     deployPath = path.dirname(__filename);
+    // } 
 
 
 if(cmd._ == "tokens"){
