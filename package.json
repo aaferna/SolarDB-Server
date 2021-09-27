@@ -1,6 +1,6 @@
 {
   "name": "solardb-server",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "Servidor de Base de Datos noSQL basado en SolarDB",
   "main": "index.js",
   "bin": "index.js",
@@ -8,7 +8,8 @@
     "test": "node index.js",
     "setup": "node index.js setup",
     "nuser": "node index.js nuser",
-    "start": "node index.js run"
+    "start": "node index.js run",
+    "compile": "pkg ."
   },
   "repository": {
     "type": "git",
