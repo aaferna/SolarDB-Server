@@ -8,8 +8,6 @@ const jsonErrorHandler = async (err, req, res, next) => {
     res.status(400).json({ msg : "Se enviaron datos que no estan formateados en JSON" });
 }
 
-
-
 exsrv.use(express.json())
 exsrv.use(jsonErrorHandler)
 
@@ -23,7 +21,6 @@ exsrv.all('*', function(req, res, next) {
     next();
 });
 
-
 exsrv.use(require('./components/basic'));
 exsrv.use(require('./components/insert'));
 exsrv.use(require('./components/update'));
@@ -34,7 +31,6 @@ exsrv.all('*', (req, res, next) => {
         msg: `No se puede resolver el metodo ${req.originalUrl}`
     });
 });
-
 
 exsrv.listen(port, () => {
 
