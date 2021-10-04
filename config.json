@@ -1,0 +1,9 @@
+{
+  "port": 1802,
+  "container": "/Volumes/Datos 256GB/Github/SolarDB-Server/data/",
+  "deployPath": "/Volumes/Datos 256GB/Github/SolarDB-Server",
+  "htoken": "63891477-d249-4089-8ce6-9d4d5bd779dd",
+  "hindex": "5cb5defa-d9e6-48fa-ae48-8bcb97911fc7",
+  "usercmd": true,
+  "helmet": true
+}
