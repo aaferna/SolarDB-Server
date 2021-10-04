@@ -26,8 +26,10 @@ exsrv.all('*', function(req, res, next) {
 
 exsrv.use(require('./components/basic'));
 exsrv.use(require('./components/insert'));
+exsrv.use(require('./components/update'));
 
 exsrv.all('*', (req, res, next) => {
+    log.reg(deployPath, `Se intento resolver el metodo ${req.originalUrl}`)
     res.status(404).json({
         msg: `No se puede resolver el metodo ${req.originalUrl}`
     });
