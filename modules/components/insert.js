@@ -1,39 +1,46 @@
 const   express = require('express'), 
         router = express.Router(), 
         log = require("../log"), 
-        util = require("./util");
+        util = require("./util"),
+        solar = require("solardb-core"),
+        jwt = require('jwt-simple'),
+        isJSON = require('is-valid-json');
 
-router.post('/insert/:store/:collection', tokenValidator, (req, res) => {
 
-    if(!req.params.store || !req.params.collection){
-        res.status(400).json({ msg: "Valide tener ingresado Store y Collection" })
+router.post('/insert/:collection', tokenValidator, (req, res) => {
+
+    if(!req.params.collection){
+        res.status(400).json({ msg: "Valide tener ingresado la Coleccion" })
     } 
     
-    if(searchPermits(userVerify.permits, req.body.collection, "create") === true || userVerify.admin === true){
-        if(req.body.collection != undefined && req.body.collection != "" && req.body.data != undefined && req.body.data != "" ){
+    if(util.searchPermits(req.user.permits, req.params.collection, "create") === true || req.user.admin === true){
+        if(isJSON(req.body) && Object.keys(req.body).length !== 0){
+
             try{
+
                 const insert = solar.dbInsert(
-                    jwt.encode(req.body.data, fiStack.hashIndex),
-                    req.body.collection,
-                    fiStack.container)
+                    jwt.encode(req.body, config.hindex),
+                    req.params.collection,
+                    config.container
+                )
+
                 if(insert.id){
-                    res.json({
-                        status: 205,
-                        msg: "Response OK",
-                        id: insert.id
-                    })
-                } else { res.json({ status: 204, msg: "No se encontraron datos"}) }
+                    res.status(201).json({ id: insert.id })
+                } else { res.status(400).json({ msg: "No se pudo ingresar los datos"})  }
+
             }catch(err){
-                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "No se encontraron datos /insert", err: err })+",", false)
-                res.json({ status: 204, msg: "No se encontraron Datos"})
+                log.reg(deployPath, "No se pudo ingresar los datos : "+ err)
+                res.status(500).json({ msg: "No se pudo ingresar los datos"}) 
             }
+
         } else { 
-            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "Fallo la consulta: consulta mal armada /insert" })+",", false)
-            res.json({ status: 203, msg: "Fallo la consulta: consulta mal armada"}) 
+            // log.reg(deployPath, "El JSON enviado no es Valido /insert")
+            res.status(400).json({ msg: "El JSON enviado no es Valido"}) 
         }
+
     } else { 
-        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({type: "error", msg : "El usuario no tiene permisos de escritura /insert" })+",", false)
-        res.json({ status: 202, msg: "El usuario no tiene los permisos correctos"}) 
+        log.reg(deployPath, "El usuario no tiene permisos de escritura /insert")
+        res.status(401).json({ msg: "El usuario no tiene los permisos correctos"}) 
     }
             
 

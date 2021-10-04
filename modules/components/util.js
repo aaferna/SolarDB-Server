@@ -4,7 +4,7 @@ const   log = require("../log"),
         path = require('path'), 
         { validate: uuidValidate } = require('uuid');
 
-exports.indexDecode = (data) =>{
+exports.indexDecode = (data) => {
     try {
         return decoded = jwt.decode(data, config.hindex);
     } catch(err) {
@@ -13,7 +13,8 @@ exports.indexDecode = (data) =>{
     }
 }
 
-exports.tokenDecode = (head) =>{
+exports.tokenDecode = (head) => {
+
     try {
         
         let response = 0
@@ -53,6 +54,7 @@ exports.tokenDecode = (head) =>{
         return 0
 
     }
+
 }
 
 exports.removeItemAll = (arr, value) => {
