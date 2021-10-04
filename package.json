@@ -15,14 +15,13 @@
     "type": "git",
     "url": "git+https://github.com/gusgeek/SolarDB-Server.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "gusgeek",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/gusgeek/SolarDB-Server/issues"
   },
   "homepage": "https://github.com/gusgeek/SolarDB-Server#readme",
   "dependencies": {
-    "ajv": "^8.6.2",
     "express": "4.17.1",
     "fs": "0.0.1-security",
     "generate-password": "1.6.1",

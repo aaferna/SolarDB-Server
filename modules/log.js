@@ -1,6 +1,6 @@
-const solar = require("solardb-core")
-const { DateTime } = require("luxon");
-const path = require('path');
+const   solar = require("solardb-core"), 
+        { DateTime } = require("luxon"), 
+        path = require('path');
 
 exports.reg = (root, data) => {
     let app = "log"

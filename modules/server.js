@@ -1,19 +1,15 @@
-const express = require("express")
-const jwt = require('jwt-simple');
-const generator = require('generate-password');
-const { validate: uuidValidate } = require('uuid');
-const Ajv = require("ajv")
-const { v4: uuidv4 } = require('uuid');
-const log = require("./log")
-// const config = require("../config.json")
+const   express = require("express"), 
+        log = require("./log"), 
+        port = config.port, 
+        exsrv = express()
 
 const jsonErrorHandler = async (err, req, res, next) => {
     log.reg(deployPath, "Se enviaron datos que no estan formateados en JSON")
     res.status(400).json({ msg : "Se enviaron datos que no estan formateados en JSON" });
 }
 
-const port = config.port
-const exsrv = express()
+
+
 exsrv.use(express.json())
 exsrv.use(jsonErrorHandler)
 
@@ -29,10 +25,18 @@ exsrv.all('*', function(req, res, next) {
 
 
 exsrv.use(require('./components/basic'));
+exsrv.use(require('./components/insert'));
+
+exsrv.all('*', (req, res, next) => {
+    res.status(404).json({
+        msg: `No se puede resolver el metodo ${req.originalUrl}`
+    });
+});
+
 
 exsrv.listen(port, () => {
 
-    console.log('El servidor fue inicializado')
+    console.log(`El servidor fue inicializado en el puerto ${port}`)
 
 }).on('error', function (err) {
 

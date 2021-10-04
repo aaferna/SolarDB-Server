@@ -1,8 +1,7 @@
-const { v4: uuidv4 } = require('uuid');
-const fs = require("fs");
-const path = require('path');
-
-const log = require("./log");
+const   { v4: uuidv4 } = require('uuid'), 
+        fs = require("fs"), 
+        path = require('path'),
+        log = require("./log");
 
 exports.create = () => {
 

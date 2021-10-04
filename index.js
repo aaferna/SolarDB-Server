@@ -1,12 +1,12 @@
 
-const fs = require("fs");
-const path = require('path');
-const cmd = require('minimist')(process.argv.slice(2))
+const   fs = require("fs"), 
+        path = require('path'), 
+        cmd = require('minimist')(process.argv.slice(2))
 
-const setup = require("./modules/setup");
-const log = require("./modules/log");
-const nuser = require("./modules/nuser");
-const token = require("./modules/token");
+const   setup = require("./modules/setup"), 
+        log = require("./modules/log"), 
+        nuser = require("./modules/nuser"), 
+        token = require("./modules/token");
 
 global.deployPath
 

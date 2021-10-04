@@ -1,32 +1,19 @@
-var express = require('express');
-var router = express.Router();
-const log = require("../log");
-const util = require("./util");
+const   express = require('express'), 
+        router = express.Router(),
+        log = require("../log"), 
+        util = require("./util");
 
-    router.get('/', (req, res) => {
+    router.get('/', tokenValidator, (req, res) => {
+           
+        res.status(200).json({ msg: "Response OK", user: req.user })
 
-        if (!req.headers.authorization) {
+    })
 
-            log.reg(deployPath, "Token no disponible al acceder a /")
-            res.status(401).json({ message: "Tu petición no tiene cabecera de autorización" });
-
-        } else {
-
-            const user = util.tokenDecode(req.headers.authorization)
-
-            if(user != 0 && user != undefined){
-
-                res.status(200).json({ msg: "Response OK", user: user })
-
-            } else {
-
-                log.reg(deployPath, "Token erroneo al acceder a / : " + JSON.stringify(req.headers.authorization))
-                res.status(401).json({ msg: "Token es erroneo"})
-
-            }
-
-        }
+    router.get('/status', (req, res) => {
+           
+        res.status(200).json({ msg: "Service OK" })
         
     })
+    
 
 module.exports = router;

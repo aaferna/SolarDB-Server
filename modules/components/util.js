@@ -1,21 +1,22 @@
-const log = require("../log");
-const solar = require("solardb-core")
-const jwt = require('jwt-simple');
-const path = require('path');
-const { validate: uuidValidate } = require('uuid');
+const   log = require("../log"),
+        solar = require("solardb-core"),
+        jwt = require('jwt-simple'),
+        path = require('path'), 
+        { validate: uuidValidate } = require('uuid');
 
 exports.indexDecode = (data) =>{
     try {
         return decoded = jwt.decode(data, config.hindex);
     } catch(err) {
+        log.reg(deployPath, "Existe un error al desencriptar Index" + err)
         return 0
     }
 }
-exports.tokenDecode = (head) =>{
 
+exports.tokenDecode = (head) =>{
     try {
         
-        let response
+        let response = 0
 
         const container = path.join(deployPath, "/system/")
         const indexes = solar.dbGetIndex("users", container)
@@ -49,8 +50,48 @@ exports.tokenDecode = (head) =>{
     } catch(err) { 
 
         log.reg(deployPath, "Existe un error en el Validor de TOKENs" + err)
-        return 0 
+        return 0
 
+    }
+}
+
+exports.removeItemAll = (arr, value) => {
+    var i = 0;
+    while (i < arr.length) {
+        if (arr[i] === value) { arr.splice(i, 1);
+        } else { ++i;  }
+    }
+    return arr;
+}
+
+exports.searchPermits = (user, db, permits) => {
+
+    for (const datb in user) {
+        if(datb === db){
+            return user[datb][permits] ? true : false
+        }
     }
 
 }
+
+global.tokenValidator = (req, res, next) => {
+
+    if(req.headers.authorization){
+
+        const user = this.tokenDecode(req.headers.authorization)
+        if(user != 0 && user != undefined){
+            req.user = user;
+            next();
+        } else {
+            log.reg(deployPath, "Token erroneo al acceder" + JSON.stringify(req.headers.authorization))
+            res.status(401).json({ msg: "Token es erroneo"})
+        }
+
+    } else {
+
+        log.reg(deployPath, "El token no esta Presente ")
+        res.status(401).json({ msg: "El token no esta Presente"})
+
+    }
+    
+};

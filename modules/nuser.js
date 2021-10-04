@@ -1,8 +1,8 @@
-const solar = require("solardb-core")
-const jwt = require('jwt-simple');
-const generator = require('generate-password');
-const { v4: uuidv4 } = require('uuid');
-const path = require('path');
+const   solar = require("solardb-core"), 
+        jwt = require('jwt-simple'), 
+        generator = require('generate-password'), 
+        { v4: uuidv4 } = require('uuid'), 
+        path = require('path');
 
 
 exports.create = () => {
