@@ -4,7 +4,8 @@ const path = require('path');
 
 const log = require("./log");
 
-exports.setupConfig = (deployPath) => {
+exports.create = () => {
+
     try {
         
         if (!fs.existsSync(path.join(deployPath, "/config.json"))) {

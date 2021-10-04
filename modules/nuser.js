@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 
-exports.create = (deployPath) => {
+exports.create = () => {
     
     const config = require("../config.json");
     let container = path.join(deployPath, "/system/")

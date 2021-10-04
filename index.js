@@ -14,7 +14,7 @@ global.deployPath
 if(cmd.dev === true){
 
     deployPath = path.dirname(__filename);
-
+    
 } else {
 
     deployPath = path.dirname(process.execPath);
@@ -28,18 +28,18 @@ if(cmd.tokens === true){
 
 } else if(cmd.setup === true) {
 
-    setup.setupConfig(deployPath)
+    setup.create()
 
 } else {
 
     if (fs.existsSync(path.join(deployPath, "/config.json"))) {
-        const config = require(path.join(deployPath, "/config.json"));
+        global.config = require(path.join(deployPath, "/config.json"));
 
         if(cmd.user === true){
 
             if(config.usercmd === true){ 
                 
-                nuser.create(deployPath)
+                nuser.create()
                 log.reg(deployPath, "Se creo un usuario por medio de CMD")
 
             } else { 

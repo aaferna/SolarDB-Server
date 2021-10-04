@@ -1,11 +1,11 @@
 {
   "name": "solardb-server",
-  "version": "1.0.0",
+  "version": "0.11.0",
   "description": "Servidor de Base de Datos noSQL basado en SolarDB",
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
-    "start": "nodemon node index.js --dev",
+    "start": "nodemon index.js --dev",
     "setup": "node index.js --dev --setup",
     "nuser": "node index.js --dev --user",
     "token": "node index.js --dev --tokens",

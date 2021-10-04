@@ -2,7 +2,6 @@ const log = require("../log");
 const solar = require("solardb-core")
 const jwt = require('jwt-simple');
 const path = require('path');
-const config = require("../../config.json");
 const { validate: uuidValidate } = require('uuid');
 
 exports.indexDecode = (data) =>{

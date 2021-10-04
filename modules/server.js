@@ -5,7 +5,7 @@ const { validate: uuidValidate } = require('uuid');
 const Ajv = require("ajv")
 const { v4: uuidv4 } = require('uuid');
 const log = require("./log")
-const config = require("../config.json")
+// const config = require("../config.json")
 
 const jsonErrorHandler = async (err, req, res, next) => {
     log.reg(deployPath, "Se enviaron datos que no estan formateados en JSON")
