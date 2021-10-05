@@ -12,24 +12,46 @@ const   express = require('express'),
             } 
             
             if(util.searchPermits(req.user.permits, req.params.collection, "select") === true || req.user.admin === true){
-                try{
+                // try{
 
-                    let response = util.indexDecode(solar.dbGetData(
+                    let histoDecode = [], search, history = solar.dbGetData(
                         req.params.id, 
                         req.params.collection,
                         config.container
-                    ).pop())
+                    )
 
-                    if(response){
-                        res.status(200).json(response)
+                    search = new Object();
+                    search[req.params.key] = req.params.value
+                    
+                    for (let index = 0; index < history.length; index++) {
+
+                        let detect, decode
+                        decode = util.indexDecode(history[index])
+                        detect = util.getValues(decode, req.params.key, req.params.value)
+                        console.log(detect)
+
+                        if(detect){
+                            histoDecode.push(
+                                {
+                                    id: history[index], 
+                                    search: search, 
+                                    response: detect
+                                }
+                            )
+                        }
+                        
+                    }   
+
+                    if(histoDecode){
+                        res.status(200).json(histoDecode)
                     } else { 
                         res.status(400).json({ msg: "No se pudo encontrar los datos"})
                     }
 
-                }catch(err){
-                    log.reg(deployPath, "No se pudo encontrar los datos : "+ err)
-                    res.status(500).json({ msg: "No se pudo encontrar los datos"}) 
-                }
+                // }catch(err){
+                //     log.reg(deployPath, "No se pudo encontrar los datos : "+ err)
+                //     res.status(500).json({ msg: "No se pudo encontrar los datos"}) 
+                // }
 
              } else { 
                 log.reg(deployPath, "El usuario no tiene permisos de lectura /select")

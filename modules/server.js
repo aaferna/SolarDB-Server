@@ -26,6 +26,7 @@ exsrv.use(require('./components/crud/insert'));
 exsrv.use(require('./components/crud/update'));
 exsrv.use(require('./components/crud/delete'));
 exsrv.use(require('./components/crud/select'));
+exsrv.use(require('./components/crud/search'));
 
 exsrv.all('*', (req, res, next) => {
     log.reg(deployPath, `Se intento resolver el metodo ${req.originalUrl}`)

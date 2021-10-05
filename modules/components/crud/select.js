@@ -56,7 +56,6 @@ const   express = require('express'),
                     )
                     
                     for (let index = 0; index < history.length; index++) {
-                        // const element = array[index];
                         histoDecode.push(util.indexDecode(history[index]))
                         
                     }   
