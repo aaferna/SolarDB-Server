@@ -34,7 +34,6 @@ const   express = require('express'),
                         }
 
                     } else { 
-                        // log.reg(deployPath, "El JSON enviado no es Valido /insert")
                         res.status(400).json({ msg: "El JSON enviado no es Valido"}) 
                     }
 
