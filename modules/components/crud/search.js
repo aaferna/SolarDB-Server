@@ -26,32 +26,6 @@ const   express = require('express'),
             return objects;
         }
         
-        const getValues = (obj, key) => {
-            var objects = [];
-            for (var i in obj) {
-                if (!obj.hasOwnProperty(i)) continue;
-                if (typeof obj[i] == 'object') {
-                    objects = objects.concat(getValues(obj[i], key));
-                } else if (i == key) {
-                    objects.push(obj[i]);
-                }
-            }
-            return objects;
-        }
-        
-        const getKeys = (obj, val) => {
-            var objects = [];
-            for (var i in obj) {
-                if (!obj.hasOwnProperty(i)) continue;
-                if (typeof obj[i] == 'object') {
-                    objects = objects.concat(getKeys(obj[i], val));
-                } else if (obj[i] == val) {
-                    objects.push(i);
-                }
-            }
-            return objects;
-        }
-
         router.get('/search/keyvalue/:pop?', tokenValidator, (req, res) => {
 
             if((req.body.collection === undefined) || (req.body.id === undefined) || (req.body.collection === "") || (req.body.id === "")){
@@ -62,46 +36,46 @@ const   express = require('express'),
                     if(isJSON(req.body) && Object.keys(req.body).length !== 0){
                         try{
 
-                            let histoDecode = [], search, history = solar.dbGetData(
+                            let histoDecode = [], search = new Object(), history = solar.dbGetData(
                                 req.body.id, 
                                 req.body.collection,
                                 config.container
-                            ), elements
+                            )
+
+                            search[req.body.key] = req.body.value
 
                             if(req.params.pop){
 
-                                elements = history.pop()
-
-
-                                decode = util.indexDecode(elements)
-                                detect = getObjects(decode, req.body.key, req.body.value)
-                                
                                 histoDecode.push(
                                     {
                                         position: "pop", 
                                         search: search, 
-                                        response: detect
+                                        response: getObjects(
+                                                        util.indexDecode(
+                                                            history.pop()
+                                                        ), 
+                                                    req.body.key, req.body.value
+                                                )
                                     }
                                 )
 
                             } else {
 
-                                elements = history
-                                search = new Object();
-                                search[req.body.key] = req.body.value
-                                
-                                for (let index = 0; index < elements.length; index++) {
+                                for (let index = 0; index < history.length; index++) {
                                     
-                                    let detect, decode
-                                    decode = util.indexDecode(elements[index])
-                                    detect = getObjects(decode, req.body.key, req.body.value)
+                                    let detect = getObjects(
+                                            util.indexDecode(
+                                                history[index]
+                                            ), 
+                                        req.body.key, req.body.value
+                                    )
                                     
                                     if(isJSON(detect[0])){
                                         histoDecode.push(
                                             {
                                                 position: index, 
                                                 search: search, 
-                                                response: detect
+                                                response: detect[0]
                                             }
                                         )
                                     }
@@ -129,5 +103,6 @@ const   express = require('express'),
             }     
 
         })
+
 
 module.exports = router;
