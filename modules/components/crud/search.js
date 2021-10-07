@@ -5,6 +5,7 @@ const   express = require('express'),
         solar = require("solardb-core"),
         isJSON = require('is-valid-json');
 
+
         const getObjects = (obj, key, val) => {
             var objects = [];
             for (var i in obj) {
@@ -50,6 +51,7 @@ const   express = require('express'),
             }
             return objects;
         }
+
         router.get('/search/keyvalue/:pop?', tokenValidator, (req, res) => {
 
             if(!req.body.collection && !req.body.id){
@@ -70,8 +72,10 @@ const   express = require('express'),
 
                                 elements = history.pop()
 
+
                                 decode = util.indexDecode(elements)
                                 detect = getObjects(decode, req.body.key, req.body.value)
+                                
                                 histoDecode.push(
                                     {
                                         position: "pop", 
