@@ -5,59 +5,104 @@ const   express = require('express'),
         solar = require("solardb-core"),
         isJSON = require('is-valid-json');
 
-        router.get('/search/:collection/:id/:key/:value', tokenValidator, (req, res) => {
-
-            if(!req.params.collection && !req.params.id){
-                res.status(400).json({ msg: "Valide tener ingresado la Coleccion" })
-            } 
-            
-            if(util.searchPermits(req.user.permits, req.params.collection, "select") === true || req.user.admin === true){
-                // try{
-
-                    let histoDecode = [], search, history = solar.dbGetData(
-                        req.params.id, 
-                        req.params.collection,
-                        config.container
-                    )
-
-                    search = new Object();
-                    search[req.params.key] = req.params.value
-                    
-                    for (let index = 0; index < history.length; index++) {
-
-                        let detect, decode
-                        decode = util.indexDecode(history[index])
-                        detect = util.getValues(decode, req.params.key, req.params.value)
-                        console.log(detect)
-
-                        if(detect){
-                            histoDecode.push(
-                                {
-                                    id: history[index], 
-                                    search: search, 
-                                    response: detect
-                                }
-                            )
-                        }
-                        
-                    }   
-
-                    if(histoDecode){
-                        res.status(200).json(histoDecode)
-                    } else { 
-                        res.status(400).json({ msg: "No se pudo encontrar los datos"})
-                    }
-
-                // }catch(err){
-                //     log.reg(deployPath, "No se pudo encontrar los datos : "+ err)
-                //     res.status(500).json({ msg: "No se pudo encontrar los datos"}) 
-                // }
-
-             } else { 
-                log.reg(deployPath, "El usuario no tiene permisos de lectura /select")
-                res.status(401).json({ msg: "El usuario no tiene los permisos correctos"}) 
+        const getValues = (obj, key) => {
+            var objects = [];
+            for (var i in obj) {
+                if (!obj.hasOwnProperty(i)) continue;
+                if (typeof obj[i] == 'object') {
+                    objects = objects.concat(getValues(obj[i], key));
+                } else if (i == key) {
+                    objects.push(obj[i]);
+                }
             }
-                    
+            return objects;
+        }
+        
+        const getKeys = (obj, val) => {
+            var objects = [];
+            for (var i in obj) {
+                if (!obj.hasOwnProperty(i)) continue;
+                if (typeof obj[i] == 'object') {
+                    objects = objects.concat(getKeys(obj[i], val));
+                } else if (obj[i] == val) {
+                    objects.push(i);
+                }
+            }
+            return objects;
+        }
+        router.get('/search/keyvalue/:pop?', tokenValidator, (req, res) => {
+
+            if(!req.body.collection && !req.body.id){
+                res.status(400).json({ msg: "Valide tener ingresado la Coleccion" })
+            } else {
+            
+                if(util.searchPermits(req.user.permits, req.body.collection, "select") === true || req.user.admin === true){
+                    if(isJSON(req.body) && Object.keys(req.body).length !== 0){
+                        try{
+
+                            let histoDecode = [], search, history = solar.dbGetData(
+                                req.body.id, 
+                                req.body.collection,
+                                config.container
+                            ), elements
+
+                            if(req.params.pop){
+
+                                elements = history.pop()
+
+                                decode = util.indexDecode(elements)
+                                detect = util.getObjects(decode, req.body.key, req.body.value)
+                                histoDecode.push(
+                                    {
+                                        position: "pop", 
+                                        search: search, 
+                                        response: detect
+                                    }
+                                )
+
+                            } else {
+
+                                elements = history
+                                search = new Object();
+                                search[req.body.key] = req.body.value
+                                
+                                for (let index = 0; index < elements.length; index++) {
+                                    
+                                    let detect, decode
+                                    decode = util.indexDecode(elements[index])
+                                    detect = getObjects(decode, req.body.key, req.body.value)
+                                    
+                                    if(isJSON(detect[0])){
+                                        histoDecode.push(
+                                            {
+                                                position: index, 
+                                                search: search, 
+                                                response: detect
+                                            }
+                                        )
+                                    }
+                                    
+                                }  
+
+                            }
+
+                            if(histoDecode){
+                                res.status(200).json(histoDecode)
+                            } else { 
+                                res.status(400).json({ msg: "No se pudo encontrar los datos"})
+                            }
+                        }catch(err){
+                            log.reg(deployPath, "No se pudo encontrar los datos : "+ err)
+                            res.status(500).json({ msg: "No se pudo encontrar los datos"}) 
+                        }
+                    } else { 
+                        res.status(400).json({ msg: "El JSON enviado no es Valido"}) 
+                    }
+                } else { 
+                    log.reg(deployPath, "El usuario no tiene permisos de lectura /select")
+                    res.status(401).json({ msg: "El usuario no tiene los permisos correctos"}) 
+                }
+            }     
 
         })
 
