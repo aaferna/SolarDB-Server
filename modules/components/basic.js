@@ -5,7 +5,7 @@ const   express = require('express'),
 
     router.get('/', tokenValidator, (req, res) => {
            
-        res.status(200).json({ msg: "Response OK", user: req.user })
+        res.status(200).json({ msg: "Login OK" })
 
     })
 
