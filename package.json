@@ -1,6 +1,6 @@
 {
   "name": "solardb-server",
-  "version": "0.11.0",
+  "version": "1.0.1",
   "description": "Servidor de Base de Datos noSQL basado en SolarDB",
   "main": "index.js",
   "bin": "index.js",
