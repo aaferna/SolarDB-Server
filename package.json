@@ -34,6 +34,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.13"
+    "nodemon": "^2.0.13",
+    "pkg": "^5.3.3"
   }
 }
