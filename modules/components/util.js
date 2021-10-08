@@ -2,11 +2,21 @@ const   log = require("../log"),
         solar = require("solardb-core"),
         jwt = require('jwt-simple'),
         path = require('path'), 
-        { validate: uuidValidate } = require('uuid');
+        { validate: uuidValidate } = require('uuid'),
+        BSON = require('bson');
 
 exports.indexDecode = (data) => {
     try {
-        return jwt.decode(data, config.hindex);
+
+        if(config.encrypt === "jwt"){
+            return jwt.decode(data, config.hindex);
+        } else if(config.encrypt === "bson"){
+            return BSON.deserialize(Buffer.from(data));
+        } else {
+            log.reg(deployPath, "No esta configurado un Encrypt")
+            return 0
+        }
+
     } catch(err) {
         log.reg(deployPath, "Existe un error al desencriptar Index" + err)
         return 0
@@ -15,7 +25,16 @@ exports.indexDecode = (data) => {
 
 exports.indexEncode = (data) => {
     try {
-        return jwt.encode(data, config.hindex);
+
+        if(config.encrypt === "jwt"){
+            return jwt.encode(data, config.hindex);
+        } else if(config.encrypt === "bson"){
+            return BSON.serialize(data);
+        } else {
+            log.reg(deployPath, "No esta configurado un Encrypt")
+            return 0
+        }
+
     } catch(err) {
         log.reg(deployPath, "Existe un error al encriptar Index" + err)
         return 0
@@ -23,6 +42,7 @@ exports.indexEncode = (data) => {
 }
 
 exports.tokenDecode = (head) => {
+
 
     try {
         
@@ -34,7 +54,8 @@ exports.tokenDecode = (head) => {
         indexes.map(id => {
 
             const datainStore = solar.dbGetData(id, "users", container).pop()
-            const preresponse = this.indexDecode(datainStore)
+            const preresponse = jwt.decode(datainStore, config.htoken);
+            
             const tokhead = head.split("Bearer ")[1]
 
                 if((datainStore[0].code != "ENOENT" || 

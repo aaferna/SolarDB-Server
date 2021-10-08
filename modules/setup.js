@@ -16,7 +16,7 @@ exports.create = () => {
                   config.htoken = uuidv4()
                   config.hindex = uuidv4()
                   config.usercmd = true
-                  config.helmet = true
+                  config.encrypt = "bson" // jwt
             
             fs.writeFileSync(path.join(deployPath, "/config.json"), JSON.stringify(config), 'utf8');
             log.reg(deployPath, "Archivo de Configuracion creado")
