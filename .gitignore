@@ -4,6 +4,8 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+backup/
+system/
 
 # Runtime data
 pids
@@ -83,3 +85,4 @@ solardb-server-macos
 solardb-server-win.exe
 data/
 .vscode/settings.json
+test.js

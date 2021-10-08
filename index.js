@@ -1,83 +1,65 @@
-require('dotenv').config();
-const server = require("./modules/server");
-const fs = require("fs");
-const path = require('path');
-const cmd = require('minimist')(process.argv.slice(2))
 
-let deployPath = path.dirname(process.execPath);
+const   fs = require("fs"), 
+        path = require('path'), 
+        cmd = require('minimist')(process.argv.slice(2))
 
-    // if(process.env.DEV === "TRUE"){
-    //     deployPath = path.dirname(__filename);
-    // } 
+const   setup = require("./modules/setup"), 
+        log = require("./modules/log"), 
+        nuser = require("./modules/nuser"), 
+        token = require("./modules/token");
+
+global.deployPath
 
 
-if(cmd._ == "tokens"){
+if(cmd.dev === true){
 
-    const { v4: uuidv4 } = require('uuid');
-    console.log("\nTokens Generados \n\n"+uuidv4())
-    console.log(uuidv4()+"\n\n")
+    deployPath = path.dirname(__filename);
+    
+} else {
 
-} else if(cmd._ == 'setup') {
+    deployPath = path.dirname(process.execPath);
+    
+}
 
-    try {
-        if (!fs.existsSync(path.join(deployPath, "/.env"))) {
-            const { v4: uuidv4 } = require('uuid');
-            let configFile = 
-                `
-                    PORT="1802"
-                    CONTAINER="${path.join(deployPath, "/data/")}"
-                    LOG="${path.join(deployPath, "/log/")}"
-                    HTOKEN="${uuidv4()}"
-                    HINDEX="${uuidv4()}"
-                    USERCMD=TRUE
-                    HELMET=TRUE
-                `
-            if (!fs.existsSync(path.join(deployPath, "/.env"))) {
-                fs.writeFileSync(path.join(deployPath, "/.env"), configFile, 'utf8');
-            } 
-            console.log("Archivo de Configuracion creado")
-        } else { 
-            // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Se intento crear un perfil nuevo: Ya existe un perfil" })+",", false)
-            console.log("Ya existe un perfil") 
-        }
-    } catch (err) {
-        // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Se intento crear un perfil nuevo: El directorio o archivo no existe", err: err.code })+",", false)
-        if (err.code === 'ENOENT') {
-            console.log({
-                code: err.code,
-                msj: "El directorio o archivo no existe",
-            })
-        } else {
-            console.log({
-                code: err.code,
-                msj: "El directorio o archivo no existe",
-            })
-        }
-    }   
+
+if(cmd.tokens === true){
+
+    token.create()
+
+} else if(cmd.setup === true) {
+
+    setup.create()
 
 } else {
 
-    if (fs.existsSync(path.join(deployPath, "/.env"))) {
+    if (fs.existsSync(path.join(deployPath, "/config.json"))) {
+        global.config = require(path.join(deployPath, "/config.json"));
 
-        const fiStack = {
-            "port": process.env.PORT,
-            "container": process.env.CONTAINER,
-            "hashToken": process.env.HTOKEN,
-            "hashIndex": process.env.HINDEX,
-            "presre": deployPath,
-            "HELMET": process.env.HELMET
-        }
+        if(cmd.user === true){
 
-        if(cmd._ == "nuser"){
+            if(config.usercmd === true){ 
+                
+                nuser.create()
+                log.reg(deployPath, "Se creo un usuario por medio de CMD")
 
-            if(process.env.USERCMD === "TRUE"){ server.nuser(fiStack) } 
-            else { 
-                // c.loggering(process.env.LOG,'SolarDB', JSON.stringify({ type: "error", msg : "Se intento crear un usuario nuevo por CMD y no esta habilitado" })+",", false)
+            } else { 
+
+                log.reg(deployPath, "Se intento crear un usuario nuevo por CMD y no esta habilitado")
                 console.log("No es posible crear usuarios") 
+
             }   
             
-        } else { server.run(fiStack, deployPath) }
+        } else { 
+            
+            require("./modules/server")
+        
+        }
 
-    } else { console.log("Hay un problema con los archivos de configuracion, porfavor verifique que se encuentren"); }
+    } else { 
+
+        log.reg(deployPath, "Hay un problema con los archivos de configuracion, porfavor verifique que se encuentren")
+        console.log("Hay un problema con los archivos de configuracion, porfavor verifique que se encuentren"); 
+
+    }
 
 }
