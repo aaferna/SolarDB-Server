@@ -7,8 +7,11 @@ const   solar = require("solardb-core"),
 
 exports.create = () => {
     
-    const config = require("../config.json");
-    let container = path.join(deployPath, "/system/")
+    const config = require(
+        path.join(deployPath, "/config.json")
+    );
+
+    const container = path.join(deployPath, "/system/")
 
     solar.dbCreateCollection ("users", container)
 

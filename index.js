@@ -21,7 +21,6 @@ if(cmd.dev === true){
     
 }
 
-
 if(cmd.tokens === true){
 
     token.create()

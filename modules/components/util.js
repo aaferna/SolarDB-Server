@@ -32,7 +32,10 @@ exports.tokenDecode = (head) => {
                     preresponse != 0) &&
                     preresponse.key == tokhead){
 
-                    if(uuidValidate(jwt.decode(preresponse.token+"."+tokhead, config.htoken))){
+                        let prese = jwt.decode(preresponse.token+"."+tokhead, config.htoken)
+                        let ires = uuidValidate(prese)
+
+                    if(ires){
 
                         response = { 
                             id: id, 
@@ -81,6 +84,7 @@ global.tokenValidator = (req, res, next) => {
     if(req.headers.authorization){
 
         const user = this.tokenDecode(req.headers.authorization)
+
         if(user != 0 && user != undefined){
             req.user = user;
             next();
