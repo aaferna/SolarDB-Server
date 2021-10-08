@@ -8,7 +8,6 @@ const   express = require('express'),
 
 
         router.post('/insert/:collection?', tokenValidator, (req, res) => {
-
             if((req.params.collection === undefined) || (req.params.collection === "")){
                 res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
             } else { 
@@ -19,7 +18,7 @@ const   express = require('express'),
                         try{
 
                             const insert = solar.dbInsert(
-                                jwt.encode(req.body, config.hindex),
+                                util.indexEncode(req.body),
                                 req.params.collection,
                                 config.container
                             )

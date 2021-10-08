@@ -6,9 +6,7 @@ const   express = require('express'),
         jwt = require('jwt-simple'),
         isJSON = require('is-valid-json');
 
-
         router.put('/update/:collection?/:id?', tokenValidator, (req, res) => {
-
             if((req.params.collection === undefined) || (req.params.collection === "") || (req.params.id === undefined) || (req.params.id === "")){
                 res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
             } else { 
@@ -18,12 +16,10 @@ const   express = require('express'),
                         try{
                             
                             const r = solar.dbUpdate(
-
-                                jwt.encode(req.body, config.hindex), 
+                                util.indexEncode(req.body),
                                 req.params.id, 
                                 req.params.collection, 
                                 config.container
-
                             )
 
                             if(r.id){

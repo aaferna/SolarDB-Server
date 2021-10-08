@@ -6,9 +6,18 @@ const   log = require("../log"),
 
 exports.indexDecode = (data) => {
     try {
-        return decoded = jwt.decode(data, config.hindex);
+        return jwt.decode(data, config.hindex);
     } catch(err) {
         log.reg(deployPath, "Existe un error al desencriptar Index" + err)
+        return 0
+    }
+}
+
+exports.indexEncode = (data) => {
+    try {
+        return jwt.encode(data, config.hindex);
+    } catch(err) {
+        log.reg(deployPath, "Existe un error al encriptar Index" + err)
         return 0
     }
 }
