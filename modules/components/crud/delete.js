@@ -14,6 +14,7 @@ const   express = require('express'),
                 if(util.searchPermits(req.user.permits, req.params.collection, "delete") === true || req.user.admin === true){
 
                         try{
+                            
                             const r = solar.dbDeleteData(
                                 req.params.id, 
                                 req.params.collection, 

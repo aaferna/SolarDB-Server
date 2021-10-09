@@ -20,12 +20,11 @@ const   express = require('express'),
                     } else { 
                         res.status(400).json({ msg: "No se pudo encontrar los datos"})
                     }
-
+                    
                 }catch(err){
                     log.reg(deployPath, "No se pudo encontrar los datos : "+ err)
                     res.status(500).json({ msg: "No se pudo encontrar los datos"}) 
                 }
-
              } else { 
                 log.reg(deployPath, "El usuario no tiene permisos de lectura /select")
                 res.status(401).json({ msg: "El usuario no tiene los permisos correctos"}) 
