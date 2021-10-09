@@ -28,6 +28,8 @@ exsrv.use(require('./components/crud/delete'));
 exsrv.use(require('./components/crud/select'));
 exsrv.use(require('./components/crud/search'));
 exsrv.use(require('./components/store/collections'));
+exsrv.use(require('./components/user/select'));
+exsrv.use(require('./components/user/insert'));
 
 exsrv.all('*', (req, res, next) => {
     log.reg(deployPath, `Se intento resolver el metodo ${req.originalUrl}`)

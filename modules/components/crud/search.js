@@ -3,8 +3,7 @@ const   express = require('express'),
         log = require("../../log"), 
         util = require("../util"),
         solar = require("solardb-core"),
-        isJSON = require('is-valid-json');
-
+        isJSON = require('is-valid-json')
 
         const getObjects = (obj, key, val) => {
             var objects = [];
@@ -32,7 +31,7 @@ const   express = require('express'),
                 res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
             } else {
             
-                if(util.searchPermits(req.user.permits, req.body.collection, "select") === true || req.user.admin === true){
+                if(util.searchPermits(req.user.permits, req.body.collection, "read") === true || req.user.admin === true){
                     if(isJSON(req.body) && Object.keys(req.body).length !== 0){
                         try{
 

@@ -2,15 +2,14 @@ const   express = require('express'),
         router = express.Router(), 
         log = require("../../log"), 
         util = require("../util"),
-        solar = require("solardb-core"),
-        isJSON = require('is-valid-json');
+        solar = require("solardb-core")
 
         router.get('/select/unique/:collection?/:id?', tokenValidator, (req, res) => {
 
             if((req.params.collection === undefined) || (req.params.collection === "") || (req.params.id === undefined) || (req.params.id === "")){
                 res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
             } else { 
-                if(util.searchPermits(req.user.permits, req.params.collection, "select") === true || req.user.admin === true){
+                if(util.searchPermits(req.user.permits, req.params.collection, "read") === true || req.user.admin === true){
                     try{
 
                         let response = util.indexDecode(solar.dbGetData(
@@ -42,7 +41,7 @@ const   express = require('express'),
             if((req.params.collection === undefined) || (req.params.collection === "") || (req.params.id === undefined) || (req.params.id === "")){
                 res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
             } else { 
-                if(util.searchPermits(req.user.permits, req.params.collection, "select") === true || req.user.admin === true){
+                if(util.searchPermits(req.user.permits, req.params.collection, "read") === true || req.user.admin === true){
                     try{
 
 

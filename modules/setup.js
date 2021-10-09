@@ -14,6 +14,7 @@ exports.create = () => {
                   config.container = path.join(deployPath, "/data/")
                   config.deployPath = deployPath
                   config.htoken = uuidv4()
+                  config.utoken = uuidv4()
                   config.hindex = uuidv4()
                   config.usercmd = true
                   config.encrypt = "bson" // jwt

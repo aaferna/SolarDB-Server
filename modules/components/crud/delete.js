@@ -2,8 +2,7 @@ const   express = require('express'),
         router = express.Router(), 
         log = require("../../log"), 
         util = require("../util"),
-        solar = require("solardb-core");
-
+        solar = require("solardb-core")
 
         router.delete('/delete/:collection?/:id?', tokenValidator, (req, res) => {
 

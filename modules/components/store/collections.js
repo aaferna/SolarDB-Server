@@ -2,12 +2,11 @@ const   express = require('express'),
         router = express.Router(), 
         log = require("../../log"), 
         util = require("../util"),
-        solar = require("solardb-core"),
-        isJSON = require('is-valid-json');
+        solar = require("solardb-core")
 
         router.get('/store/list', tokenValidator, (req, res) => {
 
-            if(util.searchPermits(req.user.permits, req.params.collection, "select") === true || req.user.admin === true){
+            if(util.searchPermits(req.user.permits, req.params.collection, "read") === true || req.user.admin === true){
                 try{
 
                     let response = solar.dbGetIndex(
