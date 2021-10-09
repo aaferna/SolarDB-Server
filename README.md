@@ -12,7 +12,7 @@
 <p align="center">
   <br><br>
   <strong>
-    Este proyecto se encuentra en fase experimental, puede sufrir cambios
+    Este proyecto se encuentra en fase de desarrollo, puede sufrir cambios
   </strong>
   <br><br>
   <a href="https://github.com/gusgeek/SolarDB-Server/wiki">Ver Wiki - documentación de Uso</a>
