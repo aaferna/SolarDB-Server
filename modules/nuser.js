@@ -39,7 +39,7 @@ exports.create = () => {
             "update": true,
             "delete": true
         }
-    }, config.hindex);
+    }, config.htoken);
 
     solar.dbInsert(data, "users", container)
     
