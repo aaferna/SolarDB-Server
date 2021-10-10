@@ -2,8 +2,9 @@
   "port": 1802,
   "container": "/Volumes/Datos 256GB/Github/SolarDB-Server/data/",
   "deployPath": "/Volumes/Datos 256GB/Github/SolarDB-Server",
-  "htoken": "4ad92684-6ff7-462e-9871-bf542715de78",
-  "hindex": "41a2816e-9cf0-4b7c-91f6-f5abc706121b",
+  "htoken": "7484fca0-f214-4479-8af9-3b1e85cb0710",
+  "utoken": "6d55581b-5d71-4083-9fe6-7cc329325abf",
+  "hindex": "668ea60d-2b8d-4024-a4ce-704c0fa4ff2d",
   "usercmd": true,
   "encrypt": "bson"
 }

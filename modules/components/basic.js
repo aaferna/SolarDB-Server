@@ -1,7 +1,6 @@
 const   express = require('express'), 
         router = express.Router(),
-        log = require("../log"), 
-        util = require("./util");
+        util = require("./util")
 
     router.get('/', tokenValidator, (req, res) => {
            

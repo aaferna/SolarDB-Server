@@ -54,8 +54,7 @@ exports.tokenDecode = (head) => {
         indexes.map(id => {
 
             const datainStore = solar.dbGetData(id, "users", container).pop()
-            const preresponse = jwt.decode(datainStore, config.htoken);
-            
+            const preresponse = jwt.decode(datainStore, config.utoken);
             const tokhead = head.split("Bearer ")[1]
 
                 if((datainStore[0].code != "ENOENT" || 
@@ -66,17 +65,14 @@ exports.tokenDecode = (head) => {
                         let ires = uuidValidate(prese)
 
                     if(ires){
-
                         response = { 
                             id: id, 
                             admin: preresponse.admin ? true : false, 
                             permits: preresponse.permits ? preresponse.permits : preresponse.databases 
                         }
-
                     } 
 
                 }
-
         })
         
         return response
