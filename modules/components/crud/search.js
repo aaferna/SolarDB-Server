@@ -24,7 +24,7 @@ const   express = require('express'),
             }
             return objects;
         }
-        
+
         router.get('/search/keyvalue/:pop?', tokenValidator, (req, res) => {
 
             if((req.body.collection === undefined) || (req.body.id === undefined) || (req.body.collection === "") || (req.body.id === "")){
@@ -103,5 +103,5 @@ const   express = require('express'),
 
         })
 
-
+      
 module.exports = router;
