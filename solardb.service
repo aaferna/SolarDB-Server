@@ -1,0 +1,13 @@
+[Unit]
+Description=SolarDB Server
+After=network.target
+
+[Service]
+Type=simple
+User=nanodano
+WorkingDirectory=/solardb/
+ExecStart=/solardb/solardb-server-linux
+Restart=on-failure # or always, on-abort, etc
+
+[Install]
+WantedBy=multi-user.target
