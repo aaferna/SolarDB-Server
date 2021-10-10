@@ -3,9 +3,7 @@ const   express = require('express'),
         log = require("../../log"), 
         util = require("../util"),
         solar = require("solardb-core"),
-        jwt = require('jwt-simple'),
-        isJSON = require('is-valid-json');
-
+        isJSON = require('is-valid-json')
 
         router.post('/insert/:collection?', tokenValidator, (req, res) => {
             if((req.params.collection === undefined) || (req.params.collection === "")){

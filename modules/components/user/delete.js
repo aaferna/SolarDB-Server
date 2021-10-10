@@ -2,26 +2,26 @@ const   express = require('express'),
         router = express.Router(), 
         log = require("../../log"), 
         util = require("../util"),
-        solar = require("solardb-core")
+        solar = require("solardb-core"),
+        path = require('path');
 
-        router.delete('/delete/:collection?/:id?', tokenValidator, (req, res) => {
+        router.delete('/user/:id?', tokenValidator, (req, res) => {
 
-            if((req.params.collection === undefined) || (req.params.collection === "") || (req.params.id === undefined) || (req.params.id === "")){
+            if((req.params.id === undefined) || (req.params.id === "")){
                 res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
             } else { 
-
-                if(util.searchPermits(req.user.permits, req.params.collection, "delete") === true || req.user.admin === true){
-
+                const container = path.join(deployPath, "/system/")
+                if(req.user.admin === true){
                         try{
                             
                             const r = solar.dbDeleteData(
                                 req.params.id, 
-                                req.params.collection, 
-                                config.container
+                                "users", 
+                                container
                             )
 
                             if(r){
-                                res.status(202).json({ msg: "Index Eliminado" })
+                                res.status(202).json({ msg: "Usuario Eliminado" })
                             } else { 
                                 res.status(400).json({ msg: "No se pudo eliminar el Index"})
                             }
