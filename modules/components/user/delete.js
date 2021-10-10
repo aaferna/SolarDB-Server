@@ -21,7 +21,7 @@ const   express = require('express'),
                             )
 
                             if(r){
-                                res.status(201).json({ msg: "Usuario Eliminado" })
+                                res.status(202).json({ msg: "Usuario Eliminado" })
                             } else { 
                                 res.status(400).json({ msg: "No se pudo eliminar el Index"})
                             }
