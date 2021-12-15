@@ -104,6 +104,7 @@ const   express = require('express'),
                 }
             }
         })
+        
         router.get('/store/:collection/list/inserts/data', tokenValidator, (req, res) => {
             if((req.params.collection === undefined) || (req.params.collection === "")){
                 res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
