@@ -4,13 +4,13 @@ const   express = require('express'),
 
     router.get('/', tokenValidator, (req, res) => {
            
-        res.status(200).json({ msg: "Login OK" })
+        res.json({ msg: "Login OK" })
 
     })
 
     router.get('/status', (req, res) => {
            
-        res.status(200).json({ msg: "Service OK" })
+        res.json({ msg: "Service OK" })
         
     })
     

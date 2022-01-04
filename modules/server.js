@@ -1,25 +1,18 @@
+
 const   express = require("express"), 
         log = require("./log"), 
         port = config.port, 
-        exsrv = express()
+        exsrv = express(),
+        cors = require('cors');
 
 const jsonErrorHandler = async (err, req, res, next) => {
     log.reg(deployPath, "Se enviaron datos que no estan formateados en JSON")
-    res.status(400).json({ msg : "Se enviaron datos que no estan formateados en JSON" });
+    res.json({ msg : "Se enviaron datos que no estan formateados en JSON" });
 }
 
 exsrv.use(express.json())
 exsrv.use(jsonErrorHandler)
-
-exsrv.all('*', function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, LINK');
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    );
-    next();
-});
+exsrv.use(cors())
 
 exsrv.use(require('./components/basic'));
 exsrv.use(require('./components/crud/insert'));

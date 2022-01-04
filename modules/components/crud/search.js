@@ -28,7 +28,7 @@ const   express = require('express'),
         router.get('/search/keyvalue/:pop?', tokenValidator, (req, res) => {
 
             if((req.body.collection === undefined) || (req.body.id === undefined) || (req.body.collection === "") || (req.body.id === "")){
-                res.status(400).json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
+                res.json({ msg: "Valide tener ingresado la Coleccion y el ID" }) 
             } else {
             
                 if(util.searchPermits(req.user.permits, req.body.collection, "read") === true || req.user.admin === true){
@@ -84,20 +84,20 @@ const   express = require('express'),
                             }
 
                             if(histoDecode){
-                                res.status(200).json(histoDecode)
+                                res.json(histoDecode)
                             } else { 
-                                res.status(400).json({ msg: "No se pudo encontrar los datos"})
+                                res.json({ msg: "No se pudo encontrar los datos"})
                             }
                         }catch(err){
                             log.reg(deployPath, "No se pudo encontrar los datos en /search/keyvalue : "+ err)
-                            res.status(500).json({ msg: "No se pudo encontrar los datos"}) 
+                            res.json({ msg: "No se pudo encontrar los datos"}) 
                         }
                     } else { 
-                        res.status(400).json({ msg: "El JSON enviado no es Valido"}) 
+                        res.json({ msg: "El JSON enviado no es Valido"}) 
                     }
                 } else { 
                     log.reg(deployPath, "El usuario no tiene permisos de lectura /search/keyvalue")
-                    res.status(401).json({ msg: "El usuario no tiene los permisos correctos"}) 
+                    res.json({ msg: "El usuario no tiene los permisos correctos"}) 
                 }
             }     
 

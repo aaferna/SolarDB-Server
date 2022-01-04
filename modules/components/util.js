@@ -116,13 +116,13 @@ global.tokenValidator = (req, res, next) => {
             next();
         } else {
             log.reg(deployPath, "Token erroneo al acceder" + JSON.stringify(req.headers.authorization))
-            res.status(401).json({ msg: "Token es erroneo"})
+            res.json({ msg: "Token es erroneo"})
         }
 
     } else {
 
         log.reg(deployPath, "El token no esta Presente ")
-        res.status(401).json({ msg: "El token no esta Presente"})
+        res.json({ msg: "El token no esta Presente"})
 
     }
     
