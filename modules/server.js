@@ -1,7 +1,6 @@
 
 const   express = require("express"), 
         log = require("./log"), 
-        port = config.port, 
         exsrv = express(),
         cors = require('cors');
 
@@ -33,21 +32,5 @@ exsrv.all('*', (req, res, next) => {
     });
 });
 
-exsrv.listen(port, () => {
 
-    console.log(`El servidor fue inicializado en el puerto ${port}`)
-
-}).on('error', function (err) {
-
-    if(err.errno === -4091) {
-
-        log.reg(deployPath, `El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1}`)
-        console.log(`----- El puerto ${port} esta ocupado, que tal si usa ${parseInt(port) + 1} -----`);
-
-    } else {
-
-        log.reg(deployPath, JSON.stringify(err))
-
-    }
-
-});
+module.exports = exsrv
